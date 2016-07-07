@@ -1,0 +1,169 @@
+<%= link_to("所有客戶", customers_path(), class: "btn btn-sm btn-default")%> >
+<%= link_to("客戶資料", customer_path(@customer), class: "btn btn-sm btn-default")%>  >
+<%= link_to("專案資料", customer_project_path(@customer,@project), class: "btn btn-sm btn-default")%>
+
+<div class="col-md-12">
+  <h1><%= link_to("專案內容", customer_path(@customer)) %></h1><%if @project.contract_start_date %>合約起始日期:<%=@project.contract_start_date.strftime("%Y/%m/%d")%> <%end%>
+  <%if @project.contract %><%="附件:"%><%= link_to(@project.contract_file_name,@project.contract.url, target: '_blank') %><%end%>
+  <div class="project">
+   
+    <%#= link_to("test", test_customer_project_path(@customer), class: "btn btn-warning pull-right") %>
+   <th> <%= link_to("新稽核案件", new_customer_project_audit_path(@customer,@project), class: "btn btn-warning pull-right") %></th>
+   <th> <%= link_to("新輔導案件", new_customer_project_consultant_path(@customer,@project), class: "btn btn-warning pull-right") %></th>
+
+    <%= link_to("修改專案內容", edit_customer_project_path(@customer,@project), class: "btn btn-primary pull-right")%>
+  </div>
+
+  <%=   link_to(@customer.customer_chi.to_s+"("+@customer.customer_num.to_s+")", customer_path(@customer)) %>
+  <%= @project.id%>
+
+<%if @consultants.count + @audits.count ==0 %>
+
+<h1><%="無任何輔導或稽核資料，請新增一筆資料"%></h1>
+<%else%>
+<%if @consultants.count != 0%>
+
+
+  <%= '專案負責人:'+@project.project_manager.to_s%>
+ <table class="table">
+   <thead>
+     <tr>
+      <th>#</th>
+       <th>上課老師</th>
+       <th>上課標準</th>
+       <th>上課</th>
+       <th>註解</th>
+       <th colspan="2"></th>
+       
+     </tr>
+   </thead>
+ 
+   <tbody>
+
+   	 <% @consultants.each do |consultant| %>
+		<tr>
+   	 	 	<td><%= consultant.id%> </td>
+   	 	    <td><%= consultant.consultor%></td>
+
+   	 		<td><%= consultant.service.try(:name)%></td>
+
+   	 		<td><%#= consultant.contract_date%> 
+          
+            <% consultant.consultant_classes.each do |c| %>
+            <li><%#= c.class_date.to_s+'('+c.class_content.to_s+')'%> 
+
+              <%= link_to(c.class_date.to_s+'('+c.class_content.to_s+')', edit_customer_project_consultant_consultant_class_path(consultant.project.customer,consultant.project,consultant,c))%>
+
+              <%= link_to("-", customer_project_consultant_consultant_class_path(@customer,@project,c.consultant,c),
+                        class: "btn btn-default btn-xs ", method: :delete, 
+                        data: { confirm: "Are you sure?" } )%>
+            <% end%>
+          </td>
+   	 		<td><%= consultant.comment%></td>
+
+			<td>
+        <%= link_to("新增課程", new_customer_project_consultant_consultant_class_path(@customer,@project,consultant),
+                        class: "btn btn-default btn-xs") %>
+   	 		 <%= link_to("Edit", edit_customer_project_consultant_path(consultant.project.customer,consultant.project,consultant),
+                        class: "btn btn-default btn-xs")%>
+           	 <%= link_to("Delete", customer_project_consultant_path(consultant.project.customer,consultant.project,consultant),
+                        class: "btn btn-default btn-xs ", method: :delete, 
+                        data: { confirm: "Are you sure?" } )%>
+            </td>
+   	 	</tr>
+   	 <% end %>
+  
+    
+   </tbody>
+ </table>
+
+ <% end %>
+
+
+<% if @audits.count!=0 %>
+ <table class="table">
+   <thead>
+     <tr>
+      <th>#</th>
+      <th>名稱</th>
+       <th>上次稽核</th>
+ <%if false%>
+       <th>子</th>
+  <%end%>
+       <th>稽核行程</th>
+       <th>組織</th>
+       <th>初始日</th>
+       <th>發布日</th>
+       <th>過期日</th>
+       <th>稽核標準</th>
+       <th>註解</th>
+       <th colspan="2"></th>
+       
+     </tr>
+   </thead>
+ 
+   <tbody>
+
+     <% @audits.each do |audit| %>
+    <tr>
+        <td><%= audit.id%> </td>
+        <td><%= audit.audit_name%> </td>
+        <td><%= audit.parent_audit.try(:audit_name)%> </td>
+<%if false%>
+        <td><%= audit.child_audit.try(:audit_name)%> </td>
+        
+         <td>主要<%= audit.brother_audit.try(:audit_name)%> </td>
+         <%end%>
+        <td><% audit.small_brothers.each do |a| %><%= a.try(:audit_name)%><p><%end%> </td>
+        <td><%= audit.certification_body%><%if audit.certificate%><P><%=audit.certificate.certificate_num %><%end%></td>
+         <td><%if audit.certificate %><%= audit.certificate.initial_date%><%end%></td>
+          <td><%if audit.certificate %><%= audit.certificate.issue_date%><%end%></td>
+           <td><%if audit.certificate %><%= audit.certificate.expiration_date%><%end%></td>
+        <td><%= audit.service.try(:name)%></td>
+
+        <td><%=truncate( audit.comment, length: 15 )%></td>
+        
+<td>
+         <%= link_to("Edit", edit_customer_project_audit_path(audit.project.customer,audit.project,audit),
+                        class: "btn btn-default btn-xs")%>
+             <%= link_to("Delete", customer_project_audit_path(audit.project.customer,audit.project,audit),
+                        class: "btn btn-default btn-xs ", method: :delete, 
+                        data: { confirm: "Are you sure?" } )%>
+            </td>
+        <% if audit.certificate %>
+           <td><%= link_to('證書修改',edit_customer_project_audit_certificate_path(audit.project.customer,audit.project,audit),class: "btn btn-primary ") %> 
+            <%= link_to("x", customer_project_audit_certificate_path(audit.project.customer,audit.project,audit),class: "btn btn-default btn-xs ",:method => :delete) %> </p></td>
+
+            <%if audit.certification_body.to_s == 'Royalcert'%>    
+               <td>
+                <%= link_to("中文", customer_project_audit_certificate_path(audit.project.customer,audit.project,audit,audit.certificate,format: :pdf,:ver => 'chi',:preview => 0)) %>
+                <%= link_to("預覽", customer_project_audit_certificate_path(audit.project.customer,audit.project,audit,audit.certificate,format: :pdf,:ver => 'chi',:preview => 1)) %>
+                  <%= link_to("英文", customer_project_audit_certificate_path(audit.project.customer,audit.project,audit,audit.certificate,format: :pdf,:ver => 'en',:preview => 0)) %>
+                  <%= link_to("預覽", customer_project_audit_certificate_path(audit.project.customer,audit.project,audit,audit.certificate,format: :pdf,:ver => 'en',:preview => 1)) %>
+                <%#= link_to(image_tag("PDF_icon_chi.gif"), customer_project_audit_certificate_path(audit.project.customer,audit.project,audit,audit.certificate,format: :pdf,:ver => 'chi',:preview => 0)) %>
+                <%#= link_to(image_tag("preview_icon.jpg"), customer_project_audit_certificate_path(audit.project.customer,audit.project,audit,audit.certificate,format: :pdf,:ver => 'chi',:preview => 1)) %>
+                  <%#= link_to(image_tag("PDF_icon_en.gif"), customer_project_audit_certificate_path(audit.project.customer,audit.project,audit,audit.certificate,format: :pdf,:ver => 'en',:preview => 0)) %>
+                  <%#= link_to(image_tag("preview_icon.jpg"), customer_project_audit_certificate_path(audit.project.customer,audit.project,audit,audit.certificate,format: :pdf,:ver => 'en',:preview => 1)) %>
+                </td>
+               <%else%>
+               <td>-</td>
+             <%end%>
+        <%else%>
+               
+           <td><%= link_to("核發證書", new_customer_project_audit_certificate_path(audit.project.customer,audit.project,audit),class: "btn btn-warning") %></td>
+          
+        <%end%>
+       
+        
+      
+      </tr>
+     <% end %>
+  
+    
+   </tbody>
+ </table>
+<%end%>
+<%end%>
+
+
+</div>

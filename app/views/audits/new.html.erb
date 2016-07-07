@@ -1,0 +1,313 @@
+ 
+
+  <h1>新增稽核資訊</h1>
+
+  <hr>
+  <%= link_to("所有客戶", customers_path(), class: "btn btn-sm btn-default")%> >
+  <%= link_to("客戶資料", customer_path(@customer), class: "btn btn-sm btn-default")%> >
+  <%= link_to("專案詳細資料", customer_project_path(@customer,@project), class: "btn btn-sm btn-default")%> > 
+  修改稽核資料
+  <%= simple_form_for [@customer, @project, @audit ] do |f| %> 
+  
+  <div class="form-inline">
+      <div class="col-md-8"><h2><%= link_to(@customer.customer_chi.to_s+"#"+@customer.customer_num.to_s, edit_customer_path(@customer))%><%if @project.contract_start_date%><%="("+@project.contract_start_date.strftime("%Y")+")"%><%end%></h2>
+                  <small><%=@customer.customer_eng%></small>
+                  <p><%= @customer.office_addr_chi.to_s %> <%=" - "%><%=@customer.office_addr_eng %>
+                   <h12><p><%=@customer.scope_chi.to_s %> <%="- "%><%=@customer.scope_eng %></h12>
+      </div>
+      <div class=".col-md-4">
+              <%if @project.contract_start_date %><h4>所屬專案:<%= f.collection_select(:project_id , @customer.projects.all, :id, :contract_start_date,label:'所屬專案', input_html: { class: "form-control"},:include_blank => true ) %><p><%end%>
+               <h4>去年的稽核:<%= f.collection_select(:parent_audit_id , @customer.audits.all, :id, :audit_name,label:'繼承自', input_html: { class: "form-control"},:include_blank => true ) %><p>
+                   主稽核行程:<%= f.collection_select(:brother_audit_id , @customer.audits.all, :id, :audit_name,label:'主稽核行程', input_html: { class: "form-control"} ,:include_blank => true ) %><%= f.input :status, label:'進度狀況', collection:["稽核日期排程中","等待稽核","報告撰寫中","報告審核中","報告審核通過，取得證書","已完成(顧客確認)"], input_html: { class: "form-control"} ,:include_blank => false %>
+                  <%= f.submit "Submit", class: "btn btn-primary", data: { disable_with: "Submitting..." } %></h4>
+      </div>
+  </div>
+      <HR color="#00FF00" size="10" width="50%">
+      <%if @audit.service%>
+        <%= f.hidden_field :audit_name, value: @audit.service.alias.to_s+"-"+@audit.audit_type.to_s+"-"+@audit.project.contract_start_date.year.to_s %>
+      <%end%>
+      <div class="form-inline col-md-offset-0">
+             <p>
+        <h4>驗證標準:<%= f.collection_select(:service_id , @project.services, :id, :name,label:'驗證標準', input_html: { class: "form-control"},:include_blank => true ) %>
+          <%#= f.input :audit_type,label:'稽核類型',as: :select , collection: [ "正評","SV1", "SV2","RA"],:include_blank => false %></h4>
+              
+ <%= f.input :audit_type,label:'稽核類型',as: :select , collection: [ "正評","SV1", "SV2","RA"],:include_blank => false ,  input_html: { class: "form-control" ,oninput: "myFunction()"}%><%="<-----正評按此出現stg-2 暫時"%></h4>
+     
+          <div class="form-inline">
+            <%= f.input :real_audit_date,label:'實際稽核日期' ,as: :string, input_html: { class: 'datepicker',onselect: "checkprogress()" } %>
+            <%= f.input :real_audit_time, label:'時間' ,as: :select, collection: ["上午","下午"]%>
+            <%= f.input :real_auditor, label:'實際稽核老師',  input_html: { class: "form-control"}%>
+          </div>
+
+          <%= f.input :certification_body,label:'驗證機構',as: :select,collection: ["Royalcert","友意","凱瑞克","恩雅","DAS","環球","亞瑟"], input_html: { class: "form-control"} ,:include_blank => false %>
+          <%= f.input :CB_number,label:'驗證機構編碼',  input_html: { class: "form-control"} %>
+               
+          <%= f.input :EA_CODE,  input_html: { class: "form-control"} %>
+          <%= f.input :ISO9000_exclusions, label:'排除條款',  input_html: { class: "form-control"} %>
+         
+            <HR color="#00FF00" size="10" width="50%">
+               <div id="active_sub5" style="display:none ">第一階段</div>
+               <%= f.input :man_day, label:'人天數', input_html: { class: "form-control"} %>
+             <p>
+               <div class="form-inline">
+               <%#= f.input :prepare_opendate,label:'預計開始日期',as: :string, input_html: { class: 'datepicker' } %>
+               <%#= f.input :prepare_closedate, label:'預計結束日期',as: :string, input_html: { class: 'datepicker' } %>
+               <%#= f.input :audit_opendate,as: :string, label:'稽核開始日期',as: :string, input_html: { class: 'datepicker' } %>
+               <%#= f.input :audit_closedate,as: :string, label:'稽核結束日期',as: :string, input_html: { class: 'datepicker' } %>
+               <%= f.input :prepare_opendate,label:'預計開始日期',as: :string%>
+                <%= f.input :prepare_closedate,label:'預計結束日期',as: :string%>
+                 <%= f.input :audit_opendate,label:'稽核開始日期',as: :string%>
+                  <%= f.input :audit_closedate,label:'稽核結束日期',as: :string%>
+
+
+              </div>
+              <div class="form-inline">
+              
+                <%#= f.input :lead_auditor, label:'主任稽核員',as: :select,collection: LeadAuditor.all, input_html: { class: "form-control"} %><%#=@audit.lead_auditor%>
+                主任稽核員:<%= f.collection_select(:lead_auditor_id , LeadAuditor.all, :id, :name_en,label:'主任稽核員', input_html: { class: "form-control"},:include_blank => true ) %>
+                稽核員1<%=f.collection_select(:auditor_id , LeadAuditor.all, :id, :name_en,label:'稽核員1', input_html: { class: "form-control"},:include_blank => true ) %>
+                <%#=@audit.auditor2%>
+                稽核員2:<%= f.collection_select(:auditor2_id , LeadAuditor.all, :id, :name_en,label:'稽核員2', input_html: { class: "form-control"},:include_blank => true ) %>
+                 <%#= f.input :lead_auditor, label:'主任稽核員', input_html: { class: "form-control"} %>
+               <%#= f.input :lead_auditor, label:'主任稽核員',  input_html: { class: "form-control"} %>
+               <%#= f.input :auditor, label:'稽核員',  input_html: { class: "form-control"} %>
+               <%#= f.input :auditor2, label:'稽核員2',  input_html: { class: "form-control"} %>
+                <input type="checkbox" name="active2" id="active2" value="1" />其他
+                  <div id="active_sub2" style="display:none">
+                    <%= f.input :specialist, label:'專員',  input_html: { class: "form-control"} %>
+                    <%= f.input :train_auditor, label:'訓練稽核員',  input_html: { class: "form-control"} %>
+                  </div>
+
+             </div>
+ <%#<input type="checkbox" name="active4" id="active4" value="1" />第二階段%>
+<%#<div id="active_sub4" style="display:none"> %>
+<%#if audit.audit_stage2 ==""%>
+  <div id="active_sub4" style="display:none ">
+             <HR color="#00FF00" size="10" width="50%">
+              第二階段<p>
+             <%= f.input :man_day_stg2, label:'人天數', input_html: { class: "form-control"} %>
+             <p>
+               <div class="form-inline">
+               <%#= f.input :prepare_opendate_stg2,label:'安排開始日期',as: :string, input_html: { class: 'datepicker' } %>
+               <%#= f.input :prepare_closedate_stg2, label:'安排結束日期',as: :string, input_html: { class: 'datepicker' } %>
+               <%#= f.input :audit_opendate_stg2,as: :string, label:'稽核開始日期',as: :string, input_html: { class: 'datepicker' } %>
+               <%#= f.input :audit_closedate_stg2,as: :string, label:'稽核結束日期',as: :string, input_html: { class: 'datepicker' } %>
+                <%= f.input :prepare_opendate_stg2,label:'預計開始日期',as: :string%>
+                <%= f.input :prepare_closedate_stg2,label:'預計結束日期',as: :string%>
+                 <%= f.input :audit_opendate_stg2,label:'稽核開始日期',as: :string%>
+                  <%= f.input :audit_closedate_stg2,label:'稽核結束日期',as: :string%>
+              </div>
+              <div class="form-inline">
+                主任稽核員:<%= f.collection_select(:lead_auditor_stg2_id , LeadAuditor.all, :id, :name_en,label:'主任稽核員', input_html: { class: "form-control"},:include_blank => true ) %>
+                稽核員1:<%= f.collection_select(:auditor1_stg2_id , LeadAuditor.all, :id, :name_en,label:'稽核員', input_html: { class: "form-control"},:include_blank => true ) %>
+               <%#= f.input :auditor, label:'稽核員',  input_html: { class: "form-control"} %>
+                稽核員2:<%= f.collection_select(:auditor2_stg2_id , LeadAuditor.all, :id, :name_en,label:'稽核員2', input_html: { class: "form-control"},:include_blank => true ) %>
+               <%#= f.input :lead_auditor_stg2, label:'主任稽核員', input_html: { class: "form-control"} %>
+               <%#= f.input :auditor1_stg2, label:'稽核員',  input_html: { class: "form-control"} %>
+               <%#= f.input :auditor2_stg2, label:'稽核員2',  input_html: { class: "form-control"} %>
+                <input type="checkbox" name="active3" id="active3" value="1" />其他
+                   <div id="active_sub3" style="display:none">
+                    <%= f.input :specialist_stg2, label:'專員',  input_html: { class: "form-control"} %>
+                    <%= f.input :train_auditor_stg2, label:'訓練稽核員',  input_html: { class: "form-control"} %>
+                   </div>
+             </div>
+</div>
+<%# %>
+<HR color="#00FF00" size="10" width="50%">
+
+             <p>
+              <div class="form-inline col-md-offset-1">
+                    <input type="checkbox" name="active" id="active" value="1" />多地址
+              </div>
+                 <div class="form-inline">
+                   <%= f.input :address1_chi,label:'地址一(中)',  input_html: { class: "form-control", :style => 'width: 515px'  } %>
+
+                   <%= f.input :address1_eng,label:'(英)',  input_html: { class: "form-control", :style => 'width: 515px' }, :id=> 'address' %>
+                 </div>
+                <div id="active_sub" style="display:none">
+                 <div class="form-inline">
+                   <%= f.input :address2_chi,label:'地址二(中)',  input_html: { class: "form-control", :style => 'width: 515px' } %>
+                   <%= f.input :address2_eng,label:'(英)',  input_html: { class: "form-control", :style => 'width: 515px' } %>
+                 </div>
+                  <div class="form-inline">
+                     <%= f.input :address3_chi, label:'地址三(中)', input_html: { class: "form-control", :style => 'width: 515px' } %>
+                   <%= f.input :address3_eng, label:'(英)', input_html: { class: "form-control", :style => 'width: 515px' } %>
+                 </div>
+                 <div class="form-inline">
+                     <%= f.input :address4_chi, label:'地址四(中)', input_html: { class: "form-control", :style => 'width: 515px' } %>
+                   <%= f.input :address4_eng, label:'(英)', input_html: { class: "form-control", :style => 'width: 515px' } %>
+                 </div>
+           </div>
+             
+                 <div class="form-inline">
+                 
+               <%= f.input :report_get_date,as: :string, label:'報告繳交日期',as: :string, input_html: { class: 'datepicker' }  %>
+               <%= f.input :report_send_date,as: :string, label:'報告寄送日期',as: :string, input_html: { class: 'datepicker' } %>
+               <%= f.input :certificate_get_date,as: :string, label:'證書取得日期',as: :string, input_html: { class: 'datepicker' }  %>
+               <%= f.input :certificate_send_date,as: :string, label:'證書寄送日期',as: :string, input_html: { class: 'datepicker' } %>
+               </div>
+               <p>
+                 <%= @customer.scope_chi%>
+               <%= f.input :scope_chi, label:'中文驗證範圍', input_html: { class: "form-control", rows: "2", :style => 'width: 90%' }%>
+                <%= @customer.scope_eng%>
+               <%= f.input :scope_eng, label:'英文驗證範圍', input_html: { class: "form-control", rows: "2", :style => 'width: 90%' }%>
+               <%= f.input :comment,  input_html: { class: "form-control"} %>
+         
+      <%= f.submit "Submit", class: "btn btn-primary", data: { disable_with: "Submitting..." } %>
+    
+    <% end %>
+   
+<script>
+document.getElementById('active').onclick = function() {
+    toggleSub(this, 'active_sub');
+};
+
+// called onclick of checkbox
+function toggleSub(box, id) {
+    // get reference to related content to display/hide
+    var el = document.getElementById(id);
+
+    if ( box.checked ) {
+        el.style.display = 'block';
+    } else {
+        el.style.display = 'none';
+    }
+}
+
+document.getElementById('active2').onclick = function() {
+    toggleSub(this, 'active_sub2');
+};
+
+
+
+document.getElementById('active3').onclick = function() {
+    toggleSub(this, 'active_sub3');
+};
+
+// called onclick of checkbox
+
+
+
+
+document.getElementById('audit_audit_type').onclick = function() {
+    toggleSub2(this, 'active_sub4');
+};
+
+// called onclick of checkbox
+function toggleSub2(box, id) {
+    // get reference to related content to display/hide
+    var el = document.getElementById(id);
+  
+
+    if ( box.value=="正評" ) {
+        el.style.display = 'block';
+         document.getElementById("audit_man_day_stg2").disabled=false;
+        document.getElementById("audit_prepare_opendate_stg2").disabled=false;
+        document.getElementById("audit_prepare_closedate_stg2").disabled=false;
+        document.getElementById("audit_audit_opendate_stg2").disabled=false;
+        document.getElementById("audit_audit_closedate_stg2").disabled=false;
+        
+        document.getElementById("audit_lead_auditor_stg2").disabled=false;
+        document.getElementById("audit_auditor1_stg2").disabled=false;
+        document.getElementById("audit_auditor2_stg2").disabled=false;
+        document.getElementById("audit_specialist_stg2").disabled=false;
+        document.getElementById("audit_train_auditor").disabled=false;
+    } else {
+        el.style.display = 'none';
+        document.getElementById("audit_man_day_stg2").disabled=true;
+        document.getElementById("audit_prepare_opendate_stg2").disabled=true;
+        document.getElementById("audit_prepare_closedate_stg2").disabled=true;
+        document.getElementById("audit_audit_opendate_stg2").disabled=true;
+        document.getElementById("audit_audit_closedate_stg2").disabled=true;
+
+        document.getElementById("audit_lead_auditor_stg2").disabled=true;
+        document.getElementById("audit_auditor1_stg2").disabled=true;
+        document.getElementById("audit_auditor2_stg2").disabled=true;
+        document.getElementById("audit_specialist_stg2").disabled=true;
+        document.getElementById("audit_train_auditor_stg2").disabled=true;
+    }
+}
+
+
+
+
+/*
+document.getElementById('active4').onclick = function() {
+    toggleSub(this, 'active_sub4');
+};
+
+// called onclick of checkbox
+function toggleSub(box, id) {
+    // get reference to related content to display/hide
+    var el = document.getElementById(id);
+    
+
+    if ( box.checked ) {
+        el.style.display = 'block';
+    } else {
+        el.style.display = 'none';
+    }
+}
+
+*/
+
+
+
+
+
+function checkprogress()
+{
+  var real_audit_date = document.getElementById("real_audit_date");
+  
+  if(real_audit_date.value==""){
+        alert("顧客編號無法空值！");
+        return false;
+        }
+
+  if (real_audit_date.value!="")
+    $dp.$('status').value="已完成(顧客確認)";
+  else 
+  {
+    if ($dp.$('id_certificate_get_date').value!="")
+      $dp.$('id_status').value="報告審核通過，取得證書";
+    else
+    {
+      
+       if ($dp.$('id_report_send_date').value!="")
+        $dp.$('id_status').value="報告審核中";
+      else
+      { 
+        if ($dp.$('id_report_get_date').value!="")
+          $dp.$('id_status').value="報告撰寫中";
+        else
+        {
+  
+          
+          if ($dp.$('id_real_audit_date').value!="")
+          {
+            if (txtDate > currDate )
+            {
+              
+              $dp.$('id_status').value="等待稽核";
+            }
+            else
+            {
+            
+              $dp.$('id_status').value="報告撰寫中";
+            }         
+          }
+          else
+          {
+            $dp.$('id_status').value="稽核日期排程中";
+          }
+        }
+      }
+    }
+  }
+  return;
+  
+}
+</script>
+
+
+

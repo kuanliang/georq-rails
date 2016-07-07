@@ -1,0 +1,62 @@
+ 
+ <%= customer.customer_chi%><%="("+customer.customer_num+")"%><%=customer.audit_standard%>
+
+
+ <%= simple_form_for [customer,project], html: { multipart: true } do |f| %> 
+   所屬客戶:
+   <%= f.collection_select(:customer_id , Customer.all, :id, :customer_num,label:'客戶', input_html: { class: "form-control"},:include_blank => true ) %><p>
+ <div class="form-inline col-md-6 col-md-offset-3" >
+    <div style="background-color:#FFD382;padding:10px;margin-bottom:1px;">
+      
+       <%= f.collection_select( :partyb , Company.all, :id, :company_name) %> 
+
+       <h4>
+       <%= f.input :contract, as: :file,label: "合約備份" %>
+       <%= f.input :contract_start_date ,as: :string, input_html: { class: 'datepicker' },label: "合約起始日期" %>
+       <%= f.input :project_manager,label: '專案負責人',as: :select, :collection => [ '劉老師', '吳老師' , '余老師', '趙老師','liu']  %><p>
+               <%#=realauditdate 之後要改成合約建立日期 %>
+      
+       <%= f.input :total_amount,  input_html: { class: "form-control"},label: "金額" %>
+       <%= f.input :currency,  as: :select, :collection => [ '新台幣', '歐元' , '美金'] ,:include_blank => false ,label: "幣別"  %> <p>
+        <%= f.input :project_type,  as: :select, :collection => [ '輔導', '輔導+正評' , '換證續評','改版'] ,:include_blank => false,label: "專案類別"   %>
+    </div>
+    
+
+    <div class="form-inline" style="background-color:#dddddd;padding:10px;margin-bottom:1px;">
+      合約內容
+    </div>
+  
+    <div class="form-group">
+          <%= f.collection_check_boxes(:service_ids, Service.all, :id, :name) do |b| %>
+            <%= b.label { b.check_box + b.text } %>
+            <%end%>
+
+    </div>
+   <div class="form-inline" style="background-color:#dddddd;padding:10px;margin-bottom:1px;">
+      付款項目
+    </div>
+
+     <test>
+    <div style="width: 400px;padding:10px;margin-bottom:1px;">
+      
+          <%#= f.collection_check_boxes(:item_ids, Item.all, :id, :contract_name) do |b| %>
+         
+            <%#= b.label(:"data-value" => b.value) { b.check_box + b.text } %> <p>
+            
+          <%#end%>
+        
+        <% @items.each do |g| %>
+          <%= check_box_tag "project[item_ids][]", g.id, @project.items.map(&:id).include?(g.id) %> <%= g.contract_name %><p>
+        <% end %>
+        <%= hidden_field_tag 'project[item_ids][]','' %>
+
+
+    </div>  </test>  
+ <hr>
+ <%= f.input :comment ,as: :text, input_html: { class: 'form-control' ,size: "118"},label: "備註" %>
+    
+  <%= f.submit "Submit", class: "btn btn-primary", data: { disable_with: "Submitting..." } %>
+   </div>
+<% end %>
+
+

@@ -1,0 +1,149 @@
+<div class="col-md-12">
+  
+  
+ <% years=[2011..2016]%>
+ <table  border=1>
+   <thead>
+      <tr>
+        <td>\</td>
+        <% 6.times do |n|%>
+        <td colspan="2"><%=2011+n%>(<%=Audit.joins(:project).where(:certification_body => "Royalcert").where("contract_start_date LIKE ? ","%#{2011+n}%").count%>)</td>
+        <%end%>
+        
+      </tr>
+      <tr>
+        <td>\</td>
+        <% 6.times do |n|%>
+          <td>認證(<%=Audit.joins(:project,:service).where("contract_start_date LIKE ? ","%#{2011+n}%").accreditation("Royalcert").count%>)</td>
+          <td>非認證(<%=Audit.joins(:project,:service).where(:certification_body => "Royalcert").where("contract_start_date LIKE ? ","%#{2011+n}%").nonaccreditation("Royalcert").count%>)</td>
+        <%end%>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>正評</td>
+
+        <% 6.times do |n|%>
+          <td><%=Audit.joins(:project,:service).where("audit_type LIKE ?","正評").where("contract_start_date LIKE ? ","%#{2011+n}%").accreditation("Royalcert").count%></td>
+          <td><%=Audit.joins(:project,:service).where("audit_type LIKE ?","正評").where("contract_start_date LIKE ? ","%#{2011+n}%").where("contract_start_date LIKE ? ","%#{2011+n}%").nonaccreditation("Royalcert").count%></td>
+        <%end%>
+
+      </tr>
+      <tr>
+        <td>續評</td>
+         <% 6.times do |n|%>
+          <td><%=Audit.joins(:project,:service).where("audit_type LIKE ?","%SV%").where("contract_start_date LIKE ? ","%#{2011+n}%").accreditation("Royalcert").count%></td>
+          <td><%=Audit.joins(:project,:service).where("audit_type LIKE ?","%SV%").where("contract_start_date LIKE ? ","%#{2011+n}%").where("contract_start_date LIKE ? ","%#{2011+n}%").nonaccreditation("Royalcert").count%></td>
+        <%end%>
+      </tr>
+      <tr>
+        <td>換證</td>
+        <% 6.times do |n|%>
+          <td><%=Audit.joins(:project,:service).where("audit_type LIKE ?","%RA%").where("contract_start_date LIKE ? ","%#{2011+n}%").accreditation("Royalcert").count%></td>
+          <td><%=Audit.joins(:project,:service).where("audit_type LIKE ?","%RA%").where("contract_start_date LIKE ? ","%#{2011+n}%").where("contract_start_date LIKE ? ","%#{2011+n}%").nonaccreditation("Royalcert").count%></td>
+        <%end%>
+      </tr>
+      <tr>
+        <td>總計</td>
+        <%= a=100%><%= b=70%><%= c=80%> <%= d=80%> <%=e=70%> <%=f=80%> <%=g=1%>
+        <% 6.times do |n|%>
+          <td colspan="2"> <%=Audit.joins(:project,:service).where("audit_type LIKE ?","正評").where("contract_start_date LIKE ? ","%#{2011+n}%").accreditation("Royalcert").count*a*g+Audit.joins(:project,:service).where("audit_type LIKE ?","%SV%").where("contract_start_date LIKE ? ","%#{2011+n}%").accreditation("Royalcert").count*b*g+Audit.joins(:project,:service).where("audit_type LIKE ?","%RA%").where("contract_start_date LIKE ? ","%#{2011+n}%").accreditation("Royalcert").count*c*g+Audit.joins(:project,:service).where("audit_type LIKE ?","正評").where("contract_start_date LIKE ? ","%#{2011+n}%").where("contract_start_date LIKE ? ","%#{2011+n}%").nonaccreditation("Royalcert").count*d*g+Audit.joins(:project,:service).where("audit_type LIKE ?","%SV%").where("contract_start_date LIKE ? ","%#{2011+n}%").nonaccreditation("Royalcert").count*e*g+Audit.joins(:project,:service).where("audit_type LIKE ?","%RA%").where("contract_start_date LIKE ? ","%#{2011+n}%").nonaccreditation("Royalcert").count*f*g%> </td>
+        <%end%>
+      </tr>
+
+      <tr>
+        <td>總計二</td>
+        <%= a=90%><%= b=90%> <%= c=90%> <%= d=90%> <%=e=90%> <%=f=90%> <%=g=1%>
+        <% 6.times do |n|%>
+          <td colspan="2"> <%=Audit.joins(:project,:service).where("audit_type LIKE ?","正評").where("contract_start_date LIKE ? ","%#{2011+n}%").accreditation("Royalcert").count*a*g+Audit.joins(:project,:service).where("audit_type LIKE ?","%SV%").where("contract_start_date LIKE ? ","%#{2011+n}%").accreditation("Royalcert").count*b*g+Audit.joins(:project,:service).where("audit_type LIKE ?","%RA%").where("contract_start_date LIKE ? ","%#{2011+n}%").accreditation("Royalcert").count*c*g+Audit.joins(:project,:service).where("audit_type LIKE ?","正評").where("contract_start_date LIKE ? ","%#{2011+n}%").where("contract_start_date LIKE ? ","%#{2011+n}%").nonaccreditation("Royalcert").count*d*g+Audit.joins(:project,:service).where("audit_type LIKE ?","%SV%").where("contract_start_date LIKE ? ","%#{2011+n}%").nonaccreditation("Royalcert").count*e*g+Audit.joins(:project,:service).where("audit_type LIKE ?","%RA%").where("contract_start_date LIKE ? ","%#{2011+n}%").nonaccreditation("Royalcert").count*f*g%>  </td>
+        <%end%>
+      </tr>
+    </tbody>
+ </table>
+ 註:認證:"QC","FS","EC"  ,   非認證"13485","22716","HC","GMP","OH","SA"
+  
+<%if true%>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <td>#</td>
+        <td>名稱</td>
+        <td>2011</td>
+        <td>2012</td>
+        <td>2013</td>
+        <td>2014</td>
+        <td>2015</td>
+        <td>2016</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% @customers.each do |customer| %>
+        <tr>
+          <td>#</td> 
+          <td><h4><%= customer.customer_num %>-<%= link_to(truncate(customer.customer_chi, length: 15 ), customer_path(customer)) %></h4><%= simple_format(truncate(customer.customer_eng), :lenth => 20)%><%if customer.stop == true%><%=customer.stop_date%>-停驗<%end%></td>
+          <%# years.each do |y|%>
+            <td>
+              <%if customer.projects.where("contract_start_date LIKE ? ","%2011%").first%>
+                <%customer.projects.where("contract_start_date LIKE ? ","%2011%").first.audits.where(:certification_body => "Royalcert").each do |a| %>
+                  <%=a.service.alias+"-"+a.audit_type+"-"+a.CB_number.to_s%><p>
+                <%end%>
+              <%else%>
+                  <%="-"%>
+              <%end%>
+            </td>
+             <td>
+              <%if customer.projects.where("contract_start_date LIKE ? ","%2012%").first%>
+                <%customer.projects.where("contract_start_date LIKE ? ","%2012%").first.audits.where(:certification_body => "Royalcert").each do |a| %>
+                  <%=a.service.alias+"-"+a.audit_type+"-"+a.CB_number.to_s%><p>
+                <%end%>
+              <%else%>
+                  <%="-"%>
+              <%end%>
+            </td>
+             <td>
+              <%if customer.projects.where("contract_start_date LIKE ? ","%2013%").first%>
+                <%customer.projects.where("contract_start_date LIKE ? ","%2013%").first.audits.where(:certification_body => "Royalcert").each do |a| %>
+                  <%=a.service.try(:alias).to_s+"-"+a.audit_type+"-"+a.CB_number.to_s%><p>
+                <%end%>
+              <%else%>
+                  <%="-"%>
+              <%end%>
+            </td>
+             <td>
+              <%if customer.projects.where("contract_start_date LIKE ? ","%2014%").first%>
+                <%customer.projects.where("contract_start_date LIKE ? ","%2014%").first.audits.where(:certification_body => "Royalcert").each do |a| %>
+                  <%=a.service.alias+"-"+a.audit_type+"-"+a.CB_number.to_s%><p>
+                <%end%>
+              <%else%>
+                  <%="-"%>
+              <%end%>
+            </td>
+             <td>
+              <%if customer.projects.where("contract_start_date LIKE ? ","%2015%").first%>
+                <%customer.projects.where("contract_start_date LIKE ? ","%2015%").first.audits.where(:certification_body => "Royalcert").each do |a| %>
+                  <%=a.service.alias+"-"+a.audit_type+"-"+a.CB_number.to_s%><p>
+                <%end%>
+              <%else%>
+                  <%="-"%>
+              <%end%>
+            </td>
+             <td>
+              <%if customer.projects.where("contract_start_date LIKE ? ","%2016%").first%>
+                <%customer.projects.where("contract_start_date LIKE ? ","%2016%").first.audits.where(:certification_body => "Royalcert").each do |a| %>
+                  <%if a.service%><%=a.service.alias%><%end%>-<%=a.try(:audit_type)%>-<%=a.CB_number.to_s%><p>
+                <%end%>
+              <%else%>
+                  <%="-"%>
+              <%end%>
+            </td>
+          <%#end%>
+        </tr>
+      <% end %>
+       <%# @posts.each do |post| %>
+      <%# end %>
+
+    </tbody>
+  </table>
+
+<%end%>
+</div>

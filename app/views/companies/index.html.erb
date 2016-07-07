@@ -1,0 +1,39 @@
+<div class="col-md-12">
+  <div class="company">
+  <%= link_to("New company", new_company_path, class: "btn btn-primary pull-right") %>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <td>#</td>
+        <td>id</td>
+        <td>公司</td>
+        <td>地址</td>
+        <td>傳真</td>
+        <td>電話</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% @companies.each do |company| %>
+        <tr>
+          <td>#</td> 
+          <td><%= company.id %><%#=  %></td>
+          <td><%= link_to(company.company_name, edit_company_path(company)) %></td>
+          <td><%= company.company_address %></td>
+          <td><%= company.company_tel %></td>
+          <td><%= company.company_fax %></td>
+          <td>
+          
+              <%= link_to("Edit", edit_company_path(company), class: "btn btn-sm btn-default")%>
+              <%= link_to("Delete", company_path(company),    class: "btn btn-sm btn-default", 
+                          method: :delete, data: { confirm: "Are you sure?" } )%>
+             
+
+
+             
+          </td>
+        </tr>
+      <% end %>
+
+    </tbody>
+  </table>
+</div>

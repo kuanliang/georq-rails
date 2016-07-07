@@ -1,0 +1,26 @@
+<h1 class="text-center">新增文章</h1>
+
+
+  <%= simple_form_for [@group,@post] do |f| %>
+    <div class="form-group">
+
+      <%= f.input :date,label: "日期", input_html: { class: "form-control"} %>
+      
+      <%= f.input :name,label: "姓名", input_html: { class: "form-control"} %>
+      
+      <%= f.input :company,label: "任職公司", input_html: { class: "form-control"} %>
+      
+      <%= f.input :classname,label: "課程名稱", input_html: { class: "form-control"} %>
+      
+      <%= f.input :teacher,label: "授課老師", input_html: { class: "form-control"} %>
+      
+      <%= f.input :content,label: "受訓是否對工作有幫助?請概述?", input_html: { class: "form-control"} %>
+      
+      <%= f.input :content2,label: "將來如何將受訓成果反映於工作?請概述?", input_html: { class: "form-control"} %>
+     
+      <%= f.input :content3,label: " 心得:", input_html: { class: "form-control"} %>
+    </div>
+    <div class="form-actions">
+      <%= f.submit "Submit", disable_with: "Submiting...", class: "btn btn-primary"%>
+    </div>
+  <% end %>

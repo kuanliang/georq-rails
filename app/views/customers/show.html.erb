@@ -1,0 +1,224 @@
+<%if @customer.stop == true%>
+<style>
+img {
+    position: absolute;
+    left: 0px;
+    top: 300px;
+    z-index: 2;
+}
+</style>
+<img src="/images/test2.png" width="300" ><%=@customer.stop_date%><%="停驗"%><%=@customer.stop_reason%>
+<%#= image_tag("test.png", :alt => "rss feed") %>
+<%end%>
+<div>
+<%= link_to("所有客戶", customers_path(), class: "btn btn-sm btn-default")%> >
+<%= link_to("客戶資料", customer_path(@customer), class: "btn btn-sm btn-default")%>
+</div>
+
+
+  <div class="customer">
+    <%= link_to("新增專案", new_customer_project_path(@customer), class: "btn btn-warning pull-right") %>
+     <%#= link_to("test", test_customer_project_path(@customer), class: "btn btn-warning pull-right") %>
+    <%= link_to("修改客戶資料", edit_customer_path(@customer), class: "btn btn-primary pull-right")%>
+      <%= link_to("續評合約", continue_customer_path(@customer), method: :post, class: "btn btn-info") %>
+  <%#= form_tag continue_customer_path(@customer), multipart: true do %>
+  <%#= file_field_tag :file, :accept => "text/csv" %>
+  <%#= submit_tag "Continue" %>
+  <%# end %>
+
+ <%= link_to "上一筆", :customer => @customer.id-1 %>
+  <%= link_to "下一筆", :customer => @customer.id+1 %>
+     <%= link_to "合約展開", :money => 1 %>
+
+     <%= link_to "表單下載", :form => 1 %>
+
+     <%= link_to "收起", :form => 0,:money => 0 %>
+      <%= link_to("+標籤", new_customer_customers_tag_path(@customer), class: "btn")%>
+
+              <% @customer.customers_tags.each do |ct|%>
+              <%= ct.tag.tag_name %>
+              <% end %>
+              <%="排定稽核月"%>
+              <% @customer.audit_months.each do|a| %>
+                  <%=a.name%>
+                <%end%>
+  </div> 
+
+<div class="col-md-8 col-md-offset-2" >
+  <table  width="100%" id="information">
+  <tr><td style="background-color:#D1EEEE;text-align: center;">客戶名稱</td><td > <h4><%= @customer.customer_chi.to_s%></h4><h6><%= @customer.customer_eng %></h6></td><td style="background-color:#D1EEEE;text-align: center;">編號</td><td><%=@customer.customer_num.to_s%></td></tr>
+  <tr><td style="background-color:#D1EEEE;text-align: center;">統一編號</td> <td><%= @customer.identification_num %> </td><td style="background-color:#D1EEEE;text-align: center;">員工人數</td><td><%= @customer.staff_num %></td></tr>
+  <tr><td width=15% style="background-color:#D1EEEE;text-align: center;">負責人</td> <td width=35% ><%= @customer.owner %> </td><td width=15% style="background-color:#D1EEEE;text-align: center;">等級</td><td width=35% ><%= @customer.level %></td></tr>
+  <tr><td  valign="middle" style="background-color:#D1EEEE;text-align: center;">管理代表</td> <td><%= @customer.mr_chi %><h6> <%= @customer.mr_eng %></h6> </td><td style="background-color:#D1EEEE;text-align: center;">管代職稱</td><td><%= @customer.mr_pos %></td></tr>
+  <tr><td style="background-color:#D1EEEE;text-align: center;">連絡人</td> <td><%= @customer.contact_ppl %> </td><td style="background-color:#D1EEEE;text-align: center;">電話</td><td><%= @customer.contact_tel %></td></tr>
+  <tr><td style="background-color:#D1EEEE;text-align: center;">  Email  </td> <td> <%= @customer.contact_email %>   </td> <td style="background-color:#D1EEEE;text-align: center;">  傳真  </td> <td>  <%= @customer.fax_num %>  </td> </tr>
+  <tr><td style="background-color:#D1EEEE;text-align: center;">聯絡住址</td> <td colspan= 3><%= @customer.contact_addr %> <%= link_to("郵遞區號查詢","http://tools.5432.tw/zip5?adrs=#{@customer.contact_addr}") %> <%= link_to("規劃路線","https://www.google.com.tw/maps/dir/807台灣高雄市三民區克武路31巷1號/#{@customer.contact_addr}") %></td></tr>
+  <tr><td style="background-color:#D1EEEE;text-align: center;">辦公室住址</td> <td colspan= 3><%= @customer.office_addr_chi %><p><h6> <%= @customer.office_addr_eng %></h6></td></tr>
+   <tr><td style="background-color:#D1EEEE;text-align: center;">工廠住址</td> <td colspan= 3><%= @customer.factory_addr_cht %><p><h6><%= @customer.factory_addr_eng %></h6></td></tr>
+   <tr><td style="background-color:#D1EEEE;text-align: center;">初始驗證日</td> <td colspan= 3><%= @customer.orginal_audit_date %></td></tr>
+   <tr><td style="background-color:#D1EEEE;text-align: center;">初始號碼</td> <td colspan= 3><%= @customer.CB_number %></td></tr>
+   <tr><td style="background-color:#D1EEEE;text-align: center;">初始機構</td> <td colspan= 3><%= @customer.certification_body %></td></tr>
+   <tr><td style="background-color:#D1EEEE;text-align: center;">初始標準</td> <td colspan= 3><%= @customer.audit_standard %></td></tr>
+    <tr><td style="background-color:#D1EEEE;text-align: center;">範圍(中文)</td> <td colspan= 3><%= @customer.scope_chi %></td></tr>
+     <tr><td style="background-color:#D1EEEE;text-align: center;">範圍(英文)</td> <td colspan= 3><%= @customer.scope_eng %></td></tr>
+  <tr><td style="background-color:#D1EEEE;text-align: center;">註解</td> <td colspan= 3><%= @customer.comment %></td></tr>
+    </table>
+  
+  </div>
+  <div class="col-md-12" >
+
+
+<%= link_to "上一筆", :customer => @customer.id-1 %> <%=@customer.id%>
+  <%= link_to "下一筆", :customer => @customer.id+1 %>
+ <table class="table" id="information2">
+   <thead>
+
+     <tr>
+
+       <th>合約時間/稽核日期</th>
+       <th>類別 </th>
+       <%if false%><th>#</th><%end%>
+       <th>專案負責人/主任稽核員</th>
+       <th>標準/稽核項目</th>
+       <th>上課日期內容/CB</th>
+       <th>證書過期日</th>
+       <%#=<th>驗證範圍</th>%>
+       <th></th>
+     </tr>
+   </thead>
+   <tbody>
+
+     <% @projects.order(contract_start_date: :desc).each do |project| %>
+
+        
+        <tr style="background-color:#FFD382">
+          <%# if project.kind =='輔導'%>
+          <%if project.contract_start_date%>
+          <td><%=project.contract_start_date.strftime("%B %Y") %></td> 
+          <%end%>
+          <td><%=project.project_type%></td>
+          <%if false %><td><%= link_to(project.id, customer_project_path(project.customer,project))%> </td> <%end%>
+          
+          <td><%=project.project_manager %></td>  
+         <%#=project.consultants %>
+          <td>
+            <% project.services.each do |t| %>
+               <%=t.alias.to_s+" " %>
+            <% end %>
+          </td>
+          <td><%#if project.contract %><%#="附件:"%><%#= link_to(project.contract_file_name,project.contract.url, target: '_blank') %><%#end%></td>
+          <td></td>
+          <td><%#= image_tag project.contract.url(:small) %></td>
+          <td><%= link_to("詳細專案內容", customer_project_path(project.customer,project),class: "btn btn-default btn-xs")%> </td>
+          <td>
+          <%#= link_to("New Project", new_customer_project_path(@customer), class: "btn btn-warning pull-right") %>
+           <%#= link_to("new entity", new_customer_project_consultant_path(project.customer,project,project.consultants),class: "btn btn-default btn-xs")%>
+           <%= link_to("編輯專案資料", edit_customer_project_path(project.customer, project),
+                       class: "btn btn-default btn-xs")%>
+           <%= link_to("刪除專案", customer_project_path(project.customer, project),
+                       class: "btn btn-default btn-xs ", method: :delete, 
+                       data: { confirm: "Are you sure?" } )%>
+                       <% if params[:money] == '1' %>
+                       <%= link_to("新增合約內容項目", new_customer_project_items_project_path(@customer,project),
+                        class: "btn btn-default btn-xs") %>
+                        <td> <%=link_to(project.currency.to_s+':'+ project.total_amount.to_s,edit_customer_project_path(@customer,project))%>
+                          <ol type="I">
+                          <% project.items_projects.each do |ip|%>
+                          <li><%=link_to(ip.item.contract_name.to_s+'('+ip.ratio.to_s+'%)['+ip.pay_status.to_s+'('+ip.get_money_date.to_s+')]',edit_customer_project_items_project_path(@customer,project,ip)) %> <%= link_to("Delete", customer_project_items_project_path(project.customer, project,ip),
+                       class: "btn btn-default btn-xs ", method: :delete, 
+                       data: { confirm: "Are you sure?" } )%>
+
+                            <%end %>  
+                          </ol>
+                            <%end%>
+                       
+         </td>
+         
+       </tr>
+          <%# if params[:show] == '1' %>
+          <% if true %>
+          <% project.consultants.each do |c|%>  
+            <tr >
+              <td>-</td><td>輔導</td>
+              <%if false %><td><%= c.id%> </td> <%end%>
+              <td><%= c.consultor%></td>
+
+              <td><%= c.service.try(:alias)%></td>
+
+              <td><%= c.contract_date%> 
+                  <%= link_to("+", new_customer_project_consultant_consultant_class_path(@customer,project,c),
+                        class: "btn btn-default btn-xs") %>
+          
+                  <% c.consultant_classes.each do |d| %>
+                    <li>
+                        <%= link_to(d.class_date.to_s+'('+d.class_content.to_s+')', edit_customer_project_consultant_consultant_class_path(c.project.customer,c.project,c,d))%>
+
+                        <%= link_to("-", customer_project_consultant_consultant_class_path(@customer,project,d.consultant,d),
+                        class: "btn btn-default btn-xs ", method: :delete, data: { confirm: "Are you sure?" } )%></li>
+                  <% end%>
+              </td>
+              <td ></td>
+              <td ><%= c.comment%></td>
+              <td>
+                  <%= link_to("Edit", edit_customer_project_consultant_path(c.project.customer,c.project,c),class: "btn btn-default btn-xs")%>
+                  <%= link_to("Delete", customer_project_consultant_path(c.project.customer,c.project,c),class: "btn btn-default btn-xs ", method: :delete, data: { confirm: "Are you sure?" } )%>
+              </td>
+            </tr>
+
+          <% end %>
+          <% project.audits.each do |c|%>  
+            <tr >
+              <td><%if c.real_audit_date %><%=c.try(:real_audit_date).strftime("%Y/%m/%d")%><%end%><p><%=c.audit_name%></td>
+              <td>稽核</td>
+              <%if false %><td><%= c.id%> </td> <%end%>
+              <td><%= c.lead_auditor%></td>
+
+              <td><% if c.service %><%= c.service.name.to_s+"-"+c.audit_type.to_s  %><p><%end%>
+                <%if c.small_brothers.first%>
+                  <%="["%>
+                  <% c.small_brothers.each do |s| %>
+                    <%= s.service.alias.to_s+"-"+s.audit_type.to_s  %>
+                  <%end%>
+                <%="]"%>
+                <%end%>
+              </td>
+              <td><%= c.certification_body%><%if c.CB_number%><%="-"+c.CB_number%><%end%></td>
+               <td><%if c.certificate %><%=c.certificate.certificate_num%><p><%= link_to(c.certificate.expiration_date,edit_customer_project_audit_certificate_path(c.project.customer,c.project,c,c.certificate))%><%end%></td>                                     
+              <%#= c.scope_chi%>
+              <td><%#= simple_format(truncate(c.scope_chi), :lenth => 1)%></td>
+              
+              <td><%= truncate(c.comment, length: 15 )%></td>
+              <td>
+                  
+                 
+                <%= link_to("Edit", edit_customer_project_audit_path(c.project.customer,c.project,c),
+                          class: "btn btn-default btn-xs")%>
+                <%= link_to("Delete", customer_project_audit_path(c.project.customer,c.project,c),
+                          class: "btn btn-default btn-xs ", method: :delete, 
+                          data: { confirm: "Are you sure?" } )%>
+                          <% if c.brother_audit==c %>
+                          <%= link_to("通知", customer_project_audit_path(c.project.customer,c.project,c,format: :pdf,:type => '驗證通知單'),
+                          class: "btn btn-default btn-xs")%>
+                          <%end%>
+                          <% if params[:form] == '1' %>
+                            <% @forms.each do |f|%>
+                            <li><%if f.follow %><%= link_to(f.name, customer_project_audit_path(c.project.customer,c.project,c,format: :pdf,:type => f.name,:id => c.id))%><%end%>
+                        <%end%>
+              <% end %>
+
+              </td>
+            </tr>
+          <% end %>
+        <%#end%> 
+
+          <%end%> <%# if params[:show] == '1' %>
+
+
+      <% end %> <%# @projects.each do |project| %>
+
+    </tbody>
+  </table>
+
+<%= link_to "上一筆", :customer => @customer.id-1 %> <%=@customer.id%>
+  <%= link_to "下一筆", :customer => @customer.id+1 %>
+</div>

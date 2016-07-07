@@ -1,0 +1,17 @@
+<div class="col-md-6 col-md-offset-4">
+  <h1>修改</h1>
+  <hr>
+  <%#= render "form", customer: @customer, project: @project, consultant: @consultant %>
+   <%= simple_form_for [@customer, @project, @items_project ] do |f| %> 
+		  <div class="form-consultant">
+			<%= f.collection_select(:item_id, Item.all, :id, :contract_name) %>
+			<%= f.input :ratio,  input_html: { class: "form-control"} %>
+			<%= f.input :pay_status,  as: :radio_buttons, :collection => [ '已付款', '尚未付款' ] %>
+			<p>
+			<%= f.input :get_money_people,   input_html: { class: "form-control"} ,label: "收款人"%>
+			<%= f.input :get_money_date,   input_html: { class: "form-control"} %>
+			<P>
+		  </div>
+	  <%= f.submit "Submit", class: "btn btn-primary", data: { disable_with: "Submitting..." } %>
+	<% end %>
+</div>

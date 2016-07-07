@@ -1,0 +1,12 @@
+<%= simple_form_for service do |f| %>
+  <div class="form-service">  
+
+  	<%= f.input :kind,  as: :radio_buttons, :collection => [ '系統認證', '產品認證' ] %>
+
+    <%= f.input :name, input_html: { class: "form-control"} %>
+
+    <%= f.input :alias, input_html: { class: "form-control"} %>
+    <%#= f.input :description, input_html: { class: "form-control"} %>
+  </div>
+  <%= f.submit "Submit", class: "btn btn-primary", data: { disable_with: "Submitting..." } %>
+<% end %>

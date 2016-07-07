@@ -1,0 +1,20 @@
+<p class="fields">
+	
+	<div class="form-inline" style="background-color:#aaa;padding:10px;margin-bottom:1px;">
+        
+        	
+	 	 <%= f.input :certification_body,label:'驗證機構',as: :select,collection: ["Royalcert","友意","凱瑞克","恩雅","DAS","環球"], input_html: { class: "form-control"} ,:include_blank => false %>
+          <%= f.collection_select(:service_id , Service.all, :id, :name,label:'驗證標準', input_html: { class: "form-control"} ) %></h4>
+		<%= f.input :scope_chi , input_html: { class: "form-control"},label: "中" %>
+		<%= f.input :scope_eng , input_html: { class: "form-control"},label: "英" %>
+
+		<%= f.hidden_field :_destroy%>
+		</div>	
+	
+	<%= f.simple_fields_for :certificate do |builder| %>
+	
+
+
+	  <%= render 'certificate_fields', :f => builder %>
+	<% end %>
+</p>

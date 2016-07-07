@@ -1,0 +1,10 @@
+<%= link_to("所有客戶", customers_path(), class: "btn btn-sm btn-default")%> >
+<%= link_to("客戶資料", customer_path(@customer), class: "btn btn-sm btn-default")%>>
+新增案件
+<h1>新增專案(合約內容)</h1>
+
+  <hr>
+  <%= render "form", customer:@customer,project: @project %>
+</div>
+
+

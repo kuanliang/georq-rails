@@ -1,0 +1,10 @@
+<%= link_to("所有客戶", customers_path(), class: "btn btn-sm btn-default")%> >
+<%= link_to("客戶資料", customer_path(@customer), class: "btn btn-sm btn-default")%>>
+修改客戶資料
+<div class="col-md-12">
+  <h1>修改客戶</h1>
+   
+  
+  <hr>
+  <%= render "form", customer: @customer %>
+</div>

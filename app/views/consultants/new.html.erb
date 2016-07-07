@@ -1,0 +1,35 @@
+<%= link_to("所有客戶", customers_path(), class: "btn btn-sm btn-default")%> >
+<%= link_to("客戶資料", customer_path(@customer), class: "btn btn-sm btn-default")%> >
+<%= link_to("專案資料", customer_project_path(@customer,@project), class: "btn btn-sm btn-default")%> >
+新增輔導案件
+<div class="col-md-8 col-md-offset-3">
+  <h1>新增輔導資料</h1>
+
+  <hr>
+  <%#= render "form", customer: @customer, project: @project, consultant: @consultant %>
+   <%= simple_form_for [@customer, @project, @consultant ] do |f| %> 
+		  <div class="form-consultant" >
+
+		       <%= f.input :consultor,label:'上課老師',as: :select, :collection => [ '劉瀚元', '吳佳樑' , '余老師', '趙老師','liu']  %>
+		       <%= f.collection_select(:service_id , @project.services, :id, :name) %>
+		       <%#= f.input :consultant_standard,  input_html: { class: "form-control"} %>
+		       <%#= f.input :contract_date,label:"簽約合約日期",as: :string, input_html: { class: 'datepicker' } %>
+		       
+		       <%= f.fields_for :consultant_classes do |builder| %>
+		       <div class="form-inline" style="background-color:#aaa;padding:10px;margin-bottom:1px;">
+  					<%= render 'class_fields', :f => builder %>
+  				
+  					</div>
+				<% end %>
+			
+
+
+		       <%= f.input :comment,  input_html: { class: "form-control"} %>
+
+
+
+		  </div>
+	  <%= f.submit "Submit", class: "btn btn-primary", data: { disable_with: "Submitting..." } %>
+	<% end %>
+</div>
+

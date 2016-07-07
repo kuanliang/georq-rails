@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>喬治亞國際開發</title>
+  <%= stylesheet_link_tag    "http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/redmond/jquery-ui.css",'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js", "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js",'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+ 
+</head>
+
+<body>
+<div class="container-fluid">
+<%= render "common/navbar" %>
+<%= notice_message %>
+  <%= yield %>
+</div>
+<%= render "common/footer" %>
+</body>
+
+</html>

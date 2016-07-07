@@ -1,0 +1,15 @@
+<div class="col-md-6 col-md-offset-4">
+  <h1>新增</h1>
+  <hr>
+  <%#= render "form", customer: @customer, project: @project, consultant: @consultant %>
+   <%= simple_form_for [@customer, @customers_tag ] do |f| %> 
+		  <div class="form-consultant">
+			<%= f.collection_select(:tag_id, Tag.all, :id, :tag_name) %>
+			<P>
+		  </div>
+	  <%= f.submit "Submit", class: "btn btn-primary", data: { disable_with: "Submitting..." } %>
+	<% end %>
+</div>
+
+
+  

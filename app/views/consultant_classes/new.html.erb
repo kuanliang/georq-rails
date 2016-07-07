@@ -1,0 +1,14 @@
+<div class="col-md-6 col-md-offset-4">
+  <h1>新增上課內容日期</h1>
+  <hr>
+  <%#= render "form", customer: @customer, project: @project, consultant: @consultant %>
+   <%= simple_form_for [@customer, @project, @consultant, @consultant_class ] do |f| %> 
+		  <div class="form-consultant">
+
+		       <%= f.input :class_date,as: :string, input_html: { class: 'datepicker' },label: "上課日期" %>
+		       <%= f.input :class_content,  input_html: { class: "form-control"},label: "上課內容" %>
+		  </div>
+	  <%= f.submit "Submit", class: "btn btn-primary", data: { disable_with: "Submitting..." } %>
+	<% end %>
+</div>
+

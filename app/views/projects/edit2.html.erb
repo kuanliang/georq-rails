@@ -1,0 +1,12 @@
+<div class="col-md-6   col-md-offset-2">
+  <h1>修改合約金額</h1>
+<%= simple_form_for [customer,project] do |f| %> 
+  <div class="form-project">
+
+       <%= f.input :total_amount,  input_html: { class: "form-control"} %>
+    
+  </div>
+  <%= f.submit "Submit", class: "btn btn-primary", data: { disable_with: "Submitting..." } %>
+<% end %>
+
+</div>

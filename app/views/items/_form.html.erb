@@ -1,0 +1,13 @@
+ <%#simple_form_for service do |f| %>
+ <%= simple_form_for item do |f| %> 
+  <div class="form-project">
+  	   <%#= f.collection_select(:item_id, Company.all, :id, :company_name) %>
+  	   <%= f.collection_select( :company_id , Company.all, :id, :company_name) %>
+  	   <%#= f.select :company_id, Company.all.map{ |c| [c.company_name, c.id] } %>
+
+    <%#= f.collection_check_boxes(:item_ids, Item.all, :id, :contract_name) %>
+       <%= f.input :contract_name,  input_html: { class: "form-control"} %>
+       <%= f.input :invoice_name,  input_html: { class: "form-control"} %>
+  </div>
+  <%= f.submit "Submit", class: "btn btn-primary", data: { disable_with: "Submitting..." } %>
+<% end %>

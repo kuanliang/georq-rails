@@ -1,0 +1,35 @@
+<div class="col-md-12">
+  <div class="item">
+    <%= link_to("New month", new_audit_month_path, class: "btn btn-primary pull-right") %>
+  </div>
+  <h1>品項</h1>
+  <table class="table table-hover">
+    <thead>
+
+
+      <tr>
+        <td>#</td>
+        <td>id</td>
+        <td>月份</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% @audit_months.each do |a| %>
+        <tr>
+          <td>#</td> 
+          <td><%= a.id %><%#=  %></td>
+          <td><%= a.name%></td>
+          <td>
+            <%# if group.editable_by?(current_user) %>
+              <%= link_to("Edit", edit_audit_month_path(a), class: "btn btn-sm btn-default")%>
+              <%= link_to("Delete", audit_month_path(a),    class: "btn btn-sm btn-default", 
+                          method: :delete, data: { confirm: "Are you sure?" } )%>
+            <%# end %>
+          </td>
+        </tr>
+      <% end %>
+
+    </tbody>
+  </table>
+
+</div>

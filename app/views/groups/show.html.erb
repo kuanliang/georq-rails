@@ -1,0 +1,96 @@
+<div class="col-md-12">
+  <div class="group">
+    <% if @group.editable_by?(current_user) %>
+     <%= link_to("Edit", edit_group_path(@group), class: "btn btn-primary pull-right")%>
+    <% end %>
+    <%= link_to("New Post", new_group_post_path(@group), class: "btn btn-warning pull-right") %>
+    <% if current_user.present? %>
+      <% if current_user.is_member_of?(@group) %>
+        <%= link_to("Quit Group", quit_group_path(@group), method: :post, class: "btn btn-danger") %>
+      <% else %>
+        <%= link_to("Join Group", join_group_path(@group), method: :post, class: "btn btn-info") %>
+      <% end %>
+    <% end %>
+
+  </div>
+  <h2><%= @group.title %></h2>
+  <p><%= @group.description %></p>
+    <%if @type == "easy"%>
+         
+    <%else%>
+        
+    <%end%>
+
+
+  <%if @type == "full"%>
+
+        <%= link_to("簡略", group_path('25',:type => "easy"),
+                              class: "btn btn-default btn-xs ") %>
+      <%@posts.order(date: :desc).each do |post| %>
+             <div class="col-md-8 col-md-offset-2" >
+
+
+                  <table  width="100%" id="information" Border="1" >
+                  <tr><td style="background-color:#D1EEEE;text-align: center;">任職公司</td><td > <h4><%= post.company%></h4></td><td style="background-color:#D1EEEE;text-align: center;">姓名</td><td><%=post.name%></td></tr>
+                  <tr><td style="background-color:#D1EEEE;text-align: center;">課程名稱</td> <td><%= post.classname %> </td><td style="background-color:#D1EEEE;text-align: center;">授課老師</td><td><%= post.teacher %></td></tr>
+
+                    <tr><td style="background-color:#D1EEEE"  colspan="4">受訓是否對工作有幫助?</td></tr>
+                    <tr> <td style="text-align: left;"colspan= 4><%= post.content %></td></tr>
+                     <tr><td style="background-color:#D1EEEE;text-align: left;" colspan="4">將來如何將受訓成果反映於工作?請概述?</td></tr><tr> <td style="text-align: left;"colspan= "4"><%= post.content2 %></td></tr>
+                  <tr><td style="background-color:#D1EEEE;text-align: left;" colspan="4">心得</td></tr><tr> <td style="text-align: left;"colspan= "4"><%= post.content3 %></td></tr>
+                  
+                    </table>
+                  
+              </div>
+               <HR color="#00FF00" size="40" width="70%">
+      <%end%>
+  <%else%>
+         <%= link_to("詳細", group_path('25',:type => "full"),
+                              class: "btn btn-default btn-xs ") %>
+        <div class="col-md col-md-offset-0" >
+            <table class="table">
+              <thead>
+                    <tr>
+
+                      <th>課程名稱</th>
+                      <th>學員</th>
+                      <th width="60%">文章</th>
+                      <%if false%>
+                      <th>作者</th>
+                      <%end%>
+                      <th>修改日期</th>
+                      <th colspan="2"></th>
+                    </tr>
+              </thead>
+              <tbody>
+                    <% @posts.order(date: :desc).each do |post| %>
+                      <tr>
+
+                        <td><%= post.classname  %>:</td>
+                        <td><%= post.name  %></td>
+                        <td> <%=render_post_content_full(post) %><p> 
+                            <%=post.content2%><p>
+                            <%=post.content3%>
+                         <%#= render_post_content(post) %> </td>
+
+                        <%if false%>
+                        <td><%= post.author.name  %></td><%end%>
+                        <td><%= post.date  %></td>
+                        <td>
+                          <% if post.editable_by?(current_user) %>
+                          <%= link_to("Edit", edit_group_post_path(post.group, post),
+                                      class: "btn btn-default btn-xs")%>
+                          <%= link_to("Delete", group_post_path(post.group, post),
+                                      class: "btn btn-default btn-xs ", method: :delete, 
+                                      data: { confirm: "Are you sure?" } )%>
+                          <% end %>
+                        </td>
+                      </tr>
+                    <% end %>
+              </tbody>
+
+            </table>
+          </div>
+      
+  <%end%>
+</div>

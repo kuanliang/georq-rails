@@ -1,0 +1,16 @@
+
+	<div style="background-color:#EEEEEE;padding:10px;margin-bottom:1px;">
+		<div class="form-inline" style="background-color:#FFD382;padding:10px;margin-bottom:1px;">
+		  <%= f.input :real_audit_date  ,as: :string , input_html: { class: 'datepicker' },label: "簽約日期" %>
+		  <%= f.input :total_amount             , input_html: { class: "form-control"},label:"金額" %>
+		  <%= f.check_box :_destroy %>
+		  <%#= f.label :_destroy, "Remove Project" %>
+		</div>
+		</p>
+		<%#= f.simple_fields_for :audits do |builder| %>
+		<%= f.simple_fields_for :audits do |builder| %>
+		  <%= render 'audit_fields', :f => builder %>
+		  <HR color="#00FF00" size="10" width="50%">
+		  	<HR color="#00FF00" size="10" width="50%">
+		<% end %>
+	</div>

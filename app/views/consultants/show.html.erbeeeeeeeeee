@@ -1,0 +1,80 @@
+<div class="col-md-12">
+  <div class="project">
+    <%= link_to("New Entity", new_customer_project_path(@project), class: "btn btn-warning pull-right") %>
+    <%#= link_to("test", test_customer_project_path(@customer), class: "btn btn-warning pull-right") %>
+    <%= link_to("Edit", edit_customer_path(@customer), class: "btn btn-primary pull-right")%>
+  </div>
+  <h2><%= @customer.customer_num %></h2>
+  <p><%= @customer.customer_chi %></p>
+  <p><%= @customer.customer_eng %></p>
+  <p><%= @customer.identification_num %></p>
+  <p><%= @customer.owner %></p>
+  <p><%= @customer.customer_chi %></p>
+  <p><%= @customer.contact_tel %></p>
+  <p><%= @customer.contact_email %></p>
+  <p><%= @customer.comment %></p>
+  
+  
+ <table class="table">
+   <thead>
+     <tr>
+      <th>#</th>
+       <th>專案類型</th>
+       <th>標準</th>
+       <th>客戶</th>
+       <th>老師</th>
+       <th colspan="2"></th>
+     </tr>
+   </thead>
+   <tbody>
+     <% @projects.kindconsultant.each do |project| %>
+       <tr>
+        <% if project.kind =='輔導' %>
+         <td><%=project.id %></td>
+         <td><%=project.kind %></td>  
+         <%#=project.consultants %>
+         <td>
+           <% project.services.each do |t| %>
+             <%=t.alias.to_s+" " %>
+           <% end %>
+         </td>
+         <td><%=project.customer.customer_chi %></td>
+         <td><%=project.project_manager %></td>
+         <td>
+a           <%#= link_to("New Project", new_customer_project_path(@customer), class: "btn btn-warning pull-right") %>
+           <%#= link_to("new entity", new_customer_project_consultant_path(project,project.consultants),class: "btn btn-default btn-xs")%>
+           <%= link_to("Edit", edit_customer_project_path(project.customer, project),
+                       class: "btn btn-default btn-xs")%>
+           <%= link_to("Delete", customer_project_path(project.customer, project),
+                       class: "btn btn-default btn-xs ", method: :delete, 
+                       data: { confirm: "Are you sure?" } )%>
+         </td>
+        <%end%>      
+       </tr>
+     <% end %>
+     <% @projects.kindaudit.each do |project| %>
+       <tr>
+        <% if project.kind =='稽核' %>
+         <td><%=project.id %></td>
+         <td><%=project.kind %></td>  
+         <%#=project.consultants %>
+         <td>
+           <% project.services.each do |t| %>
+             <%=t.alias.to_s+" " %>
+           <% end %>
+         </td>
+         <td><%=project.customer.customer_chi %></td>
+         <td><%=project.project_manager %></td>
+         <td>
+           <%= link_to("Edit", edit_customer_project_path(project.customer, project),
+                       class: "btn btn-default btn-xs")%>
+           <%= link_to("Delete", customer_project_path(project.customer, project),
+                       class: "btn btn-default btn-xs ", method: :delete, 
+                       data: { confirm: "Are you sure?" } )%>
+         </td>
+        <%end%>      
+       </tr>
+     <% end %>
+   </tbody>
+ </table>
+</div>

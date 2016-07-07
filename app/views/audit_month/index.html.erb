@@ -1,0 +1,120 @@
+<div class="col-md-40">
+
+  <div class="abgne_tab">
+      <h2 id="month">
+        <%= link_to "<", :month => (@date.beginning_of_month-1).strftime("%Y-%m-%d") %>
+        <%=h @date.strftime("%B %Y") %>
+        <%= link_to ">", :month => (@date.end_of_month+1).strftime("%Y-%m-%d") %>
+        <%#=@date.end_of_month+2%>
+      </h2>
+      <center>
+<%= link_to "<", :month => (@date.beginning_of_month-1).strftime("%Y-%m-%d") %>
+<% i=6 %>
+<% 6.times do %>
+
+<%= link_to (@date.beginning_of_month-i.month).strftime("%m").to_s+"月", :month => (@date.beginning_of_month-i.month).strftime("%Y-%m-%d") %>
+<%i=i-1%>
+<%end%>
+        <%=h @date.strftime("%B %Y") %>
+
+<% i=1 %>
+<% 6.times do %>
+
+<%= link_to (@date.beginning_of_month+i.month).strftime("%m").to_s+"月", :month => (@date.beginning_of_month+i.month).strftime("%Y-%m-%d") %>
+<%i=i+1%>
+<%end%>
+
+        <%= link_to ">", :month => (@date.end_of_month+1).strftime("%Y-%m-%d") %>
+</center>
+
+                  <%if true%>
+          <h1>排定稽核月客戶</h1>
+          <table class="table" width="100%">
+            <thead>
+              <tr>
+
+                <th>最新年份</th>
+                <th>客戶編號</th>
+                <th>客戶名稱</th>
+                <th>客戶最新稽核資訊</th>
+                 <th>證書到期日</th>
+               
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+
+
+           <% @customers.each do |c| %>
+          <tr>
+              
+
+
+                  <%#c.projects.where(contract_date_date = @date.year.to_s).each do |p|%>
+                  <%#p.audits.each do |a|%>
+                  <%#if a.real_audit_date %><%#=a.real_audit_date.strftime("%Y/%m/%d")%><%#end%>
+                   <%if true %><td><%if c.projects.order(:contract_start_date).last%> <%if c.projects.order(:contract_start_date).last.contract_start_date %>
+                    <%last_project_year=c.projects.order(:contract_start_date).last.contract_start_date.strftime("%Y")%><%=c.projects.order(:contract_start_date).last.contract_start_date.strftime("%Y")%><%end%><%end%></td> <%end%>
+                  <%if false %><td><%if c.audits.last%><%if a.real_audit_date %><%=a.real_audit_date.strftime("%Y/%m/%d")%><%end%><%end%></td><%end%>
+                  <td><%= c.customer_num%></td>  
+                  <td><%= link_to(truncate(c.customer_chi, length: 15 ), customer_path(c),
+                                         class: "btn btn-default btn-xs")%></td>  
+                  
+                  <td><%if false%><%if c.projects.order(:contract_start_date).last %><%if c.projects.order(:contract_start_date).last.audits.first%><%if c.projects.order(:contract_start_date).last.audits.first.real_audit_date%><%=c.projects.order(:contract_start_date).last.audits.first.real_audit_date.strftime("%Y/%m/%d")%><%end%><%end%><%end%><%end%>
+              		<%if c.projects.order(:contract_start_date).last %>
+              			<%if c.projects.order(:contract_start_date).last.audits.first%>
+              				<%c.projects.order(:contract_start_date).last.audits.each do |a|%>
+              					<%=link_to(a.certification_body.to_s+"-"+a.service.alias+"-"+a.audit_type,edit_customer_project_audit_path(a.project.customer,a.project,a))%>
+              						<%if a.real_audit_date%>
+              							-<%=a.real_audit_date.strftime("%Y/%m/%d")%>
+              						<%end%>
+              						<%if a.certificate%>
+	              						<%if a.certificate.expiration_date%>
+	              							(到期日:<%=a.certificate.expiration_date %> )
+	              						<%end%>
+	              						
+              						<%end%>
+              						<%if a.certification_body.to_s == "友意"%>
+	              							-三年一證
+	              					<%end%>
+              						<p>
+              				<%end%>
+              			<%end%>
+              		<%end%>
+
+
+              </td>
+                  <td><%if c.certificates.last%><%= c.certificates.order(:expiration_date).last.expiration_date %><%end%></td>                       
+                                         
+                  
+                   <%if false %><td><%c.projects.order(:contract_start_date).last%></td><%end%>
+                    <%if false %><td><%=c.projects.order(:contract_start_date).last.audits.first.real_auditor%></td><%end%>
+                   <td><%if c.stop %><%="已經停驗"%><%else%><%if last_project_year.to_s < @date.year.to_s%><%= link_to("續評合約", continue_customer_path(c), target: '_blank', method: :post, class: "btn btn-info") %><%end%> <%end%></td>
+                   <%#end%>  
+                   <%#end%>                   
+                </tr>                         
+               <%end%>
+            </tbody>
+          </table>
+<%end%>
+      <center>
+<%= link_to "<", :month => (@date.beginning_of_month-1).strftime("%Y-%m-%d") %>
+<% i=6 %>
+<% 6.times do %>
+
+<%= link_to (@date.beginning_of_month-i.month).strftime("%m").to_s+"月", :month => (@date.beginning_of_month-i.month).strftime("%Y-%m-%d") %>
+<%i=i-1%>
+<%end%>
+        <%=h @date.strftime("%B %Y") %>
+
+<% i=1 %>
+<% 6.times do %>
+
+<%= link_to (@date.beginning_of_month+i.month).strftime("%m").to_s+"月", :month => (@date.beginning_of_month+i.month).strftime("%Y-%m-%d") %>
+<%i=i+1%>
+<%end%>
+
+        <%= link_to ">", :month => (@date.end_of_month+1).strftime("%Y-%m-%d") %>
+</center>
+</div>
+</div>

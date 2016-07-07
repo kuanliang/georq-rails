@@ -1,0 +1,2 @@
+module ConsultantClassesHelper
+end

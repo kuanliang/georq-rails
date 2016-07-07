@@ -1,0 +1,508 @@
+<div class="col-md-40">
+
+  <div class="abgne_tab">
+      <h2 id="month">
+        <%= link_to "<", :month => (@date.beginning_of_month-1).strftime("%Y-%m-%d") %>
+        <%=h @date.strftime("%B %Y") %>
+        <%= link_to ">", :month => (@date.end_of_month+1).strftime("%Y-%m-%d") %>
+        <%#=@date.end_of_month+2%>
+      </h2>
+      <ul class="tabs">
+        <li><a href="#audits">當月稽核</a></li>
+        <li><a href="#royal_audits">當月皇家稽核</a></li>
+        <li><a href="#classes">當月上課</a></li>
+        <li><a href="#statistics">統計</a></li>
+      </ul>
+      <div class="tab_container">
+
+        <div id="audits" class="tab_content">
+          <h2 class="text-center"> 當月稽核 </h2>
+          <div id="calendar">
+
+<% showaudits = []%>
+  <% @audits.each do |a|%>
+    <% if !showaudits.include?(a.project.audits.first) %>
+      <% showaudits=showaudits+[a.project.audits.first]%>
+    <%end%>
+  <%end%>
+<%# showaudits=showaudits+[@consultant_classes]%>
+          
+
+
+              <%#= calendar_for @audits, :year => @date.year, :month => @date.month do |calendar| %>
+              <%= calendar_for showaudits, :year => @date.year, :month => @date.month do |calendar| %>
+                <%= calendar.head('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday') %>
+                <%= calendar.day(:day_method => :real_audit_date) do |date, audits| %>
+                  <%= date.day %>
+                  <ul bgcolor="#FFFFFF" style="cursor:hand;" onmousemove="this.style.background='#f4f4f4';" onmouseout="this.style.background='#FFFFFF';">
+                  <% for audit in audits %>
+                    <li><%= link_to h(truncate(audit.project.customer.customer_chi.to_s, length: 8 )+'-'+audit.service.alias.to_s+'-'+audit.audit_type+'-'+audit.real_auditor.to_s), edit_customer_project_audit_path(audit.project.customer, audit.project,audit) %>
+                      <%#= link_to h(truncate(audit.project.customer.customer_chi.to_s, length: 8 )+'-'+audit.service.alias.to_s+'-'+audit.audit_type+'-'+audit.project.project_manager.to_s), edit_customer_project_audit_path(audit.project.customer, audit.project,audit) %>
+                    </li>
+                  <% end%>
+                  </ul>
+                <% end %>
+              <% end %>
+
+
+            </div>
+          </div>
+<%if false%>
+           <div id="royal_audits" class="tab_content">
+          <h2 class="text-center"> 當月皇家稽核 </h2>
+          <div id="calendar">
+
+<% showaudits = []%>
+  <% @audits_report.each do |a|%>
+    <% if !showaudits.include?(a.project.audits.first) %>
+      <% showaudits=showaudits+[a.project.audits.first]%>
+    <%end%>
+  <%end%>
+<%# showaudits=showaudits+[@consultant_classes]%>
+          
+
+
+              <%#= calendar_for @audits, :year => @date.year, :month => @date.month do |calendar| %>
+              <%= calendar_for showaudits, :year => @date.year, :month => @date.month do |calendar| %>
+                <%= calendar.head('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday') %>
+                <%= calendar.day(:day_method => :real_audit_date) do |date, audits| %>
+                  <%= date.day %>
+                  <ul bgcolor="#FFFFFF" style="cursor:hand;" onmousemove="this.style.background='#f4f4f4';" onmouseout="this.style.background='#FFFFFF';">
+                  <% for audit in audits %>
+                    <li><%= link_to h(truncate(audit.project.customer.customer_chi.to_s, length: 8 )+'-'+audit.service.alias.to_s+'-'+audit.audit_type+'-'+audit.real_auditor.to_s), edit_customer_project_audit_path(audit.project.customer, audit.project,audit) %>
+                      <%#= link_to h(truncate(audit.project.customer.customer_chi.to_s, length: 8 )+'-'+audit.service.alias.to_s+'-'+audit.audit_type+'-'+audit.project.project_manager.to_s), edit_customer_project_audit_path(audit.project.customer, audit.project,audit) %>
+                    </li>
+                  <% end%>
+                  </ul>
+                <% end %>
+              <% end %>
+
+
+            </div>
+<%end%>
+
+
+        <div id="classes" class="tab_content">
+          <h2 class="text-center"> 當月上課 </h2>
+          <div id="calendar">
+            <%= calendar_for @consultant_classes, :year => @date.year, :month => @date.month do |calendar| %>
+              <%= calendar.head('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday') %>
+              <%= calendar.day(:day_method => :class_date) do |date, consultant_classes| %>
+                <%= date.day %>
+                <ul bgcolor="#FFFFFF" style="cursor:hand;" onmousemove="this.style.background='#f4f4f4';" onmouseout="this.style.background='#FFFFFF';">
+                <% for consultant_class in consultant_classes %>
+                  <li><%= link_to h('#'+consultant_class.consultant.id.to_s+':'+consultant_class.consultant.project.customer.customer_chi.to_s+'-'+consultant_class.consultant.consultor.to_s), customer_project_path(consultant_class.consultant.project.customer, consultant_class.consultant.project) %></li>
+                <% end%>
+                </ul>
+                    
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+         
+        <div id="statistics" class="tab_content" width="100%">
+            <%=@date.strftime("%Y年%m月")%>統計:
+        <% allcertificates=@certificates+@last_year_certificates+@last_2_year_certificates%>
+
+          <h1>本月過期證書</h1>
+          <table class="table" width="100%">
+            <thead>
+              <tr>
+                <th>稽核日期</th>
+                <th>客戶編號</th>
+                <th>客戶名稱</th>
+                <th>驗證機構</th>
+                <th>證書編號</th>
+                <th>證書到期日</th>
+                <th>最新合約年份</th>
+                <th>驗證標準</th>
+                <th>稽核老師</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <%# @certificates.each do |c| %>
+              <% allcertificates.each do |c| %>
+              
+              <%# allcertificates.each do |c| %>
+              <tr>
+                  <td><%if c.audit.project.customer.projects.order(:contract_start_date).last.audits.first.real_audit_date %><%=c.audit.project.customer.projects.order(:contract_start_date).last.audits.first.real_audit_date.strftime("%Y/%m/%d")%><%end%></td>
+                  <td><%= c.audit.project.customer.customer_num%></td>  
+                  <td><%= link_to(c.audit.project.customer.customer_chi, customer_path(c.audit.project.customer),
+                                         class: "btn btn-default btn-xs")%></td>  
+                  <td><%= c.audit.certification_body%></td>  
+                  <td><%= c.certificate_num%></td>  
+                  
+                  <td><%if c.audit.project.customer.certificates.last%><%= c.audit.project.customer.certificates.order(:expiration_date).last.expiration_date %><%end%></td>                       
+                                         
+                   <td> <%if c.audit.project.customer.projects.order(:contract_start_date).last.contract_start_date %>
+                    <%last_project_year=c.audit.project.customer.projects.order(:contract_start_date).last.contract_start_date.strftime("%Y")%><%=c.audit.project.customer.projects.order(:contract_start_date).last.contract_start_date.strftime("%Y")%><%end%></td> 
+                   <td><%=c.audit.service.alias+"-"+c.audit.project.customer.audits.where(:service => c.audit.service).last.audit_type%></td>
+                    <td><%=c.audit.project.customer.projects.order(:contract_start_date).last.audits.first.real_auditor%></td>
+                   <td><%if c.audit.project.customer.stop %><%="已經停驗"%><%else%><%if last_project_year.to_s != @date.year.to_s%><%= link_to("續評合約", continue_customer_path(c.audit.project.customer), target: '_blank', method: :post, class: "btn btn-info") %><%end%> <%end%></td>                     
+                </tr>                         
+               <%end%>
+            </tbody>
+          </table>
+
+
+ <h1>明年本月過期證書</h1>
+                  <% @last_year_certificates.each do |c| %>
+                   <p>
+                    <%= link_to(c.audit.project.customer.customer_chi, customer_path(c.audit.project.customer),
+                                         class: "btn btn-default btn-xs")%>
+                   <%end%>
+                   <h1>後年本月過期證書</h1>
+                  <% @last_2_year_certificates.each do |c| %>
+                   <p>
+                    <%= link_to(c.audit.project.customer.customer_chi, customer_path(c.audit.project.customer),
+                                         class: "btn btn-default btn-xs")%>
+
+
+                  <%end%>
+                    <p>
+                   
+          <p>
+
+
+
+
+
+
+          <h1>去年本月稽核客戶</h1>
+           <% @alloldaudits.each do |la| %>
+           <p>
+            <%= link_to(la.project.customer.customer_chi, customer_path(la.project.customer),
+                                 class: "btn btn-default btn-xs")%>
+           
+           <%end%>
+
+          <p>
+
+
+          <h1>本月稽核</h1>
+          <table class="table" width="100%">
+            <thead>
+              <tr>
+                <th>名稱</th>
+                <th>標準</th>
+                <th>代號</th>
+                <th>申請</th>
+                <th>8 9 </th>
+                <th>稽核日</th>
+                <th>報告繳回</th>
+                <th>報告繳交</th>
+                <th>證書核發日</th>
+                <th>證書寄送日</th>
+                <th>收款日期</th>
+                <th>備註</th>
+              </tr>
+            </thead>
+            <tbody>  
+    
+          <% showaudits.each do |audit| %>
+           <p>
+               <tr>
+                <td><%= link_to(audit.project.customer.customer_chi, customer_path(audit.project.customer),
+                                     class: "btn btn-default btn-xs")%></td>
+                <td><%=audit.service.alias%></td>
+                <td><%=audit.audit_type%></td>
+
+                <td></td>
+                <td></td>
+                
+                <td>
+                <%=audit.real_audit_date.strftime("%m-%d")%></td>
+                <td><%=audit.try(:report_get_date)%></td>
+                <td><%=audit.try(:report_send_date)%></td>
+                <td><%=audit.try(:certificate_get_date)%></td>
+                <td><%=audit.try(:certificate_send_date)%></td>
+                <td><%=audit.comment%></td>
+
+            </tr>                         
+            <%end%>
+            </tbody>
+          </table>
+<p>
+
+<h1>本月上課</h1>
+<% @consultant_classes.each do |cc| %>
+ <p>
+  <%=cc.consultant.consultor%>
+  <%=cc.class_date.strftime("%m-%d")%>
+  <%= link_to(cc.consultant.project.customer.customer_chi, customer_path(cc.consultant.project.customer),
+                       class: "btn btn-default btn-xs")%>
+ <%end%>
+<p>
+
+
+
+
+
+<h1>本月款項</h1>
+<%if true%>
+<%total_amount = 0%>
+<table class="table">
+   <thead>
+     <tr>
+      <th>#</th>
+
+      　<th>客戶</th>
+       <th>款項</th>
+       <th>合約全部金額</th>
+       <th>比例</th>
+       <th>付款狀態</th>
+     </tr>
+   </thead>
+   <tbody>
+     <% @items_projects.each do |ip| %>
+       <tr >
+         <td><%=ip.id %></td>
+
+      　 <td><%= link_to(ip.project.customer.customer_chi, customer_path(ip.project.customer),
+                       class: "btn btn-default btn-xs")%>
+       </td>
+
+      <td><%=ip.item.invoice_name%></td>
+         <td><%=ip.project.total_amount%></td>
+
+         <td><%=ip.ratio.to_s+'%'%></td>
+         <td><%=ip.pay_status.to_s%></td>
+         <%if ip.pay_status=='已付款'%>
+         <% total_amount=total_amount.to_i+ip.project.total_amount.to_i*ip.ratio.to_i/100%>
+         <%end%>
+         
+       </tr>
+     <% end %>
+
+   </tbody>
+ </table>
+ <%=total_amount%>
+<% end%>
+
+<p>
+
+<% @customers = Customer.joins(:tags).distinct.where(tags: {follow: true}) %>
+<% @taggs = Tag.where(follow: true) %>
+<% #@audits = Audit.certificate_this_month(@date) %>
+
+<% @taggs.each do |t| %>
+
+<% end %>
+<p>
+<h1><%= '本月寄出證書' %><p></h1>
+
+
+
+
+
+<% @taggs.each do |t| %>
+
+<p><p>
+<%=t.tag_name.to_s+":"%><p>
+     <%# Audit.joins(:project).joins(:customer).joins(:tags).where(:certificate_send_date => @date.beginning_of_month..@date.end_of_month).where(tags: {follow: true}).where(tags: {tag_name: t.tag_name}).find_each do |a| %>
+      <%#= a.audit_standard %> <%#= a.certificate_send_date%>
+     <%# end %> 
+
+
+
+
+    <% Customer.joins(:tags,:projects,:audits).distinct.where(audits: {:certificate_send_date => @date.beginning_of_month..@date.end_of_month}).where(tags: {follow: true}).where(tags: {tag_name: t.tag_name}).find_each do |c| %>
+    <%# c.id %> 
+    <ul>
+      <%= link_to(c.customer_chi, customer_path(c),
+                       class: "btn btn-default btn-xs")%>
+     <%#=t.tag_name%>
+    <%# c.projects.each do |p| %>
+    
+      <%# c.audits.each do |a| %>
+         <%#= a.id %>
+         <%#if (a.certificate_send_date > @date.beginning_of_month) &&  (a.certificate_send_date < @date.end_of_month) %>
+        <li TYPE="1"> <%#= a.audit_standard %> <%#= a.certificate_send_date%>
+          <%# end  %>
+      <%# end %>
+    
+    <%# end %>
+    </ul>
+    <%# @audits.each do |a| %>
+     <%#= a.audit_standard %>
+     <%#= a.project.customer.customer_chi %>
+     <%# a.project.customer.tags.each do |t| %>
+     <%#= "("+t.tag_name.to_s+")" %>
+     <%# end %>
+     <p>
+    <% end %>
+<% end%>
+<% if false %>
+<%= '追蹤名單' %><p>
+<%# @customers = Customer.joins(:tags).distinct %>
+ <% @customers.each do |c| %>
+  <%= c.customer_chi %>
+   <% c.tags.each do |t| %>
+     <%= t.tag_name %>
+     <%= t.follow %>
+   <% end %>
+  <p>
+<% end %>
+<% end %>
+  <% @teachers = [ '劉老師', '吳老師' , '余老師', '趙老師','liu'] %>
+  
+<p>
+<table>
+  <thead>
+    <tr>
+     <th colspan="3"> 
+      r統計
+    </th>
+    </tr>
+    <tr>
+      <th>專案負責人</th>
+       <th>輔導專案</th>
+       <th>稽核專案</th>
+     </tr>
+  </thead>
+  <tbody>
+    <%if false%>
+      <% @teachers.each do |t| %>
+      <tr>
+        <td><%= t+":" %></td>
+        <td>
+          <% @consultant_classes.consultant.where("consultor = ?",t).find_each do |q| %>
+          <ul>
+            <li>
+               <%= link_to(q.customer.customer_chi, customer_project_path(q.customer, q),
+                       class: "btn btn-default btn-xs")%>
+              <%#q.consultants.each do |c| %>
+                <%#= c.contract_date%>
+               <%# end %>
+          </ul>
+          <% end %>
+          <p>
+          <%#= @projects.selected_month(@date).kindconsultant.where("project_manager = ?",t).count %>
+          <%#=  @projects.kindconsultant.where("project_manager = ?",t).count %>
+        </td>
+        <td>
+          <% @projects.selected_month(@date).kindaudit.where("project_manager = ?",t).find_each do |q| %>
+            <li><%#= q.customer.customer_chi %>
+               <%= link_to(q.customer.customer_chi, customer_project_path(q.customer, q),
+                       class: "btn btn-default btn-xs")%>
+          <% end %>
+          <p>
+          <%#= @projects.selected_month(@date).kindaudit.where("project_manager = ?",t).count %>
+          <%#=  @projects.kindaudit.where("project_manager = ?",t).count %>
+       </td>
+      </tr>
+      <% end %>
+      <%end%>
+    </tbody>
+</table>
+
+<p>
+
+---------------------------------------------------------------------
+<table>
+  <thead>
+    <tr>
+     <th colspan="3">  行程統計    </th>
+    </tr>
+    <tr>
+      <th>上課老師</th>
+       <th>輔導課程</th>
+       <th>稽核</th>
+     </tr>
+  </thead>
+  <tbody>
+    <%if false%>
+      <% @teachers.each do |t| %>
+      <tr>
+        <td><%= t+":" %></td>
+        <td>
+            <% @consultant_classes.selected_month(@date).each do |c| %>
+              <% c.consultant.where("consultor = ?",t).find_each do |d| %>
+                <%# d.where("consultor = ?",t).find_each do |q| %>
+       
+               <%= link_to(d.project.customer.customer_chi, customer_project_path(d.project.customer, d.project),
+                       class: "btn btn-default btn-xs")%>
+              <%#q.consultants.each do |c| %>
+                <%#= c.contract_date%>
+               <%# end %>
+          
+            <% end %>
+          <% end %>
+        </td>
+        <td>
+
+          <p>
+          <%#=  <% @projects.selected_month(@date).kindaudit.where("project_manager = ?",t).find_each do |q| %> %>
+          <%#=  @projects.kindconsultant.where("project_manager = ?",t).count %>
+       </td>
+        
+      </tr>
+      <% end %>
+
+
+
+      <% end %>
+    </tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+</div>
+<center>
+<%= link_to "<", :month => (@date.beginning_of_month-1).strftime("%Y-%m-%d") %>
+<% i=6 %>
+<% 6.times do %>
+
+<%= link_to (@date.beginning_of_month-i.month).strftime("%m").to_s+"月", :month => (@date.beginning_of_month-i.month).strftime("%Y-%m-%d") %>
+<%i=i-1%>
+<%end%>
+        <%=h @date.strftime("%B %Y") %>
+
+<% i=1 %>
+<% 6.times do %>
+
+<%= link_to (@date.beginning_of_month+i.month).strftime("%m").to_s+"月", :month => (@date.beginning_of_month+i.month).strftime("%Y-%m-%d") %>
+<%i=i+1%>
+<%end%>
+
+        <%= link_to ">", :month => (@date.end_of_month+1).strftime("%Y-%m-%d") %>
+</center>
+<%# @consultant_classes.selected_month(@date).each do |c| %>
+              <%#= c.consultant.project.customer.customer_chi.to_s+'-'+c.consultant.consultor %>
+       
+<%# end %>
+
+
+<script type="text/javascript">
+function SetCwinHeight(){ var iframeid=document.getElementById("mainframe"); //iframe id 
+if (document.getElementById){ if (iframeid && !window.opera) { if (iframeid.contentDocument && iframeid.contentDocument.body.offsetHeight) { iframeid.height = iframeid.contentDocument.body.offsetHeight; } else if(iframeid.Document && iframeid.Document.body.scrollHeight) { iframeid.height = iframeid.Document.body.scrollHeight; } } } };
+
+
+  $(function(){
+    // 預設顯示第一個 Tab
+    var _showTab = 0;
+    var $defaultLi = $('ul.tabs li').eq(_showTab).addClass('active');
+    $($defaultLi.find('a').attr('href')).siblings().hide();
+    
+    // 當 li 頁籤被點擊時...
+    // 若要改成滑鼠移到 li 頁籤就切換時, 把 click 改成 mouseover
+    $('ul.tabs li').click(function() {
+      // 找出 li 中的超連結 href(#id)
+      var $this = $(this),
+        _clickTab = $this.find('a').attr('href');
+      // 把目前點擊到的 li 頁籤加上 .active
+      // 並把兄弟元素中有 .active 的都移除 class
+      $this.addClass('active').siblings('.active').removeClass('active');
+      // 淡入相對應的內容並隱藏兄弟元素
+      $(_clickTab).stop(false, true).fadeIn().siblings().hide();
+
+      return false;
+    }).find('a').focus(function(){
+      this.blur();
+    });
+  });
+</script>

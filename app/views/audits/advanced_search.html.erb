@@ -1,0 +1,94 @@
+<div class="col-md-12">
+  
+<%# @ta.customers.each do |c|%>
+  <%#= c.customer_name%>
+<%#` end %>
+
+  <%#=link_to('所有有標籤的', {:tag => "all"}, class: "btn btn-sm btn-default ") %>
+     <%# @tags.each do |t|%>
+       
+          <%#=link_to(t.tag_name, {:tag => t.tag_name}, class: "btn btn-sm btn-default ") %>
+      <%# end %>
+    <%#= link_to("New audit", new_customer_path, class: "btn btn-primary pull-right") %>
+ <%=link_to("正評", {:audit_type => "正評"}, class: "btn btn-sm btn-default ") %>
+ <%=link_to("續評", {:audit_type => "SV"}, class: "btn btn-sm btn-default ") %>
+ <%=link_to("換證", {:audit_type => "RA"}, class: "btn btn-sm btn-default ") %>
+
+
+  <li><%#= link_to("csv(all)", audits_path(format: "csv"))%>
+  <li><%#= link_to("csv(SG)", audits_path(format: "csv",:audit_type => "正評"))%>
+  <li><%#= link_to("csv(SV)", audits_path(format: "csv",:audit_type => "SV"))%>  
+  <li><%#= link_to("csv(RA)", audits_path(format: "csv",:audit_type => "RA"))%>  
+<%= link_to 'simple mode', audits_path %>
+
+<%= search_form_for(@q,  url: advanced_search_audits_path,  html: { method: :post }  ) do |f| %>
+  <%=f.label :CB_number %>
+  <%=f.text_field :CB_number %>
+
+  <%=f.submit %>
+<% end %>
+
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <td>#</td>
+        <td>id</td>
+        <td>驗證單位</td>
+        <td>驗證機構編號</td>
+        <td>實際稽核日期</td>
+        <td>稽核型態</td>
+        <td>服務項目</td>
+        <td>公司名稱</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% @audits.order(real_audit_date: :desc).each do |audit| %>
+        <tr>
+          <td>#</td> 
+          <td><%= audit.id %><%#=  %></td>
+          <td><%= audit.certification_body %></td>
+          <td><%= audit.CB_number %></td>
+
+          <td><%if audit.real_audit_date%><%= audit.real_audit_date.strftime("%Y/%m/%d")%><%end%></td>
+          <td><%= audit.audit_type %></td>
+          <td><%= audit.service.try(:name) %></td>
+          <td><%= link_to(truncate(audit.project.customer.customer_chi, length: 15 ), customer_path(audit.project.customer)) %></td>
+          <td>
+            
+              <%= link_to("Edit", edit_customer_project_audit_path(audit.project.customer,audit.project,audit), class: "btn btn-sm btn-default")%>
+              <%= link_to("Delete", customer_project_audit_path(audit.project.customer,audit.project,audit),    class: "btn btn-sm btn-default", 
+                          method: :delete, data: { confirm: "Are you sure?" } )%>
+              
+
+             <%= link_to("+", new_customer_customers_tag_path(audit.project.customer), class: "btn")%>
+<%#=audit.tags%>
+              <% audit.project.customer.tags.each do |t|%>
+              <%# audit.project.customer.tags.each do |t|%>
+              <%= t.tag_name %>
+              <% end %>
+  <%#link_to("新增合約內容項目", new_customer_project_items_project_path(@customer,project),
+                        class: "btn btn-default btn-xs") %>
+
+
+             
+          
+          </td>
+        </tr>
+      <% end %>
+
+       <%# @posts.each do |post| %>
+      <%# end %>
+
+    </tbody>
+  </table>
+
+   <h2>Import Audits</h2>
+<p>第一行輸入公司中文名稱 (如果專案數量為0  或是最新專案的年份不是當年 就創新專案)稽核放到最新專案)
+  <%=link_to("上傳格式範例","system/forms/files/000/000/032/original/稽核批次上傳格式.csv")%>
+  <%= form_tag import_audits_path, multipart: true do %>
+  <%= file_field_tag :file, :accept => "text/csv" %>
+  <%= submit_tag "Import" %>
+<% end %>
+
+</div>

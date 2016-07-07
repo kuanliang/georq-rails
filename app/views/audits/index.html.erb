@@ -1,0 +1,156 @@
+<div class="col-md-12">
+  
+<%=link_to("等待稽核("+@waitaudit_q.result.count.to_s+")",waitaudit_audits_path(), method: :post, class: "btn btn-info")%>
+<%=link_to("稽核完等老師報告("+@waitgetreport_q.result.count.to_s+")",waitgetreport_audits_path(), method: :post, class: "btn btn-info")%>
+<%=link_to("待做報告("+@waitreport_q.result.count.to_s+")",waitreport_audits_path(), method: :post, class: "btn btn-info")%>
+<%=link_to("等待證書("+@waitcertificate_q.result.count.to_s+")",waitcertificate_audits_path(), method: :post, class: "btn btn-info")%>
+<%=link_to("待寄送證書("+@waitsendcertificate_q.result.count.to_s+")",waitsendcertificate_audits_path(), method: :post, class: "btn btn-info")%>
+
+  <li><%#= link_to("csv(all)", audits_path(format: "csv"))%>
+  <li><%#= link_to("csv(SG)", audits_path(format: "csv",:audit_type => "正評"))%>
+  <li><%#= link_to("csv(SV)", audits_path(format: "csv",:audit_type => "SV"))%>  
+  <li><%#= link_to("csv(RA)", audits_path(format: "csv",:audit_type => "RA"))%>  
+<%#= link_to 'Advanced mode', advanced_search_audits_path %>
+
+<%#= search_form_for @q do |f| %>
+<%= search_form_for @q do |f| %>
+  <%#=f.label :CB_number %>
+  <%#=f.text_field :CB_number %>
+
+  <%=f.label "驗證單位" %>
+  <%=f.select :certification_body_cont ,["Royalcert","友意","凱瑞克","恩雅","DAS","環球","亞瑟"] ,:include_blank => true%>
+  <%=f.label "稽核類型" %>
+  <%=f.select :audit_type_cont ,["正評","SV1", "SV2","RA"] ,:include_blank => true%>
+
+  <%=f.label "服務項目" %>
+  <%=f.select :service_id_eq ,options_from_collection_for_select(Service.all, :id, :name, params[:service_id_eq]),:include_blank => true %>
+   <%=f.label "主任稽核員" %>
+  <%=f.search_field :lead_auditor_cont %>
+
+   <%=f.label "主任稽核員" %>
+   <%=f.select :lead_auditor_id_eq ,options_from_collection_for_select(LeadAuditor.all, :id, :name_chi, params[:lead_auditor_id_eq]),:include_blank => true %>
+
+
+   <%=f.label "稽核員" %>
+   <%=f.select :lead_auditor_id_or_auditor_id_or_auditor2_id_or_lead_auditor_stg2_id_or_auditor1_stg2_id_or_auditor2_stg2_id_eq ,options_from_collection_for_select(LeadAuditor.all, :id, :name_chi, params[:lead_auditor_id_or_auditor_id_or_auditor2_id_or_lead_auditor_stg2_id_or_auditor1_stg2_id_or_auditor2_stg2_id_eq]),:include_blank => true %>
+  <%#=f.search_field :lead_auditor_id_eq ,options_from_collection_for_select(LeadAuditor.all, :id, :name_chi, params[:lead_auditor_id_eq]), include_blank: true %>
+
+   <%#=f.label "主任稽核員" %>
+  <%#=f.search_field :lead_auditor_cont %>
+
+
+  <%=f.label "標籤" %>
+ 
+  <%=f.select :project_customer_tags_id_eq, options_from_collection_for_select(Tag.all, :id, :tag_name, params[:project_customer_tags_id_eq]), include_blank: true %>
+        
+   <%= f.label "從" %>
+  <%= f.search_field :project_contract_start_date_gteq, placeholder: "YYYY-MM-DD" %>
+  <%#= f.search_field :project_contract_start_date_start, placeholder: "YYYY-MM-DD" %>
+   <%= f.label "到" %>
+  <%= f.search_field :project_contract_start_date_lt %>
+  <%#= f.search_field :project_contract_start_date_end %>
+  <%#= f.label "專案年份" %>
+  <%#= f.search_field :project_contract_start_date %>
+  <%#=f.text_field :audit_standard %>
+
+  <%#=f.label :auditor %>
+  <%#=f.text_field :auditor %>
+  <%=f.submit %>
+<% end %>
+
+<%#=@q.result.include(:projects).joins(:projects)%>
+<%="共"+@q.result.count.to_s+"項結果"%>
+<%= will_paginate @audits %>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <td>#</td>
+        <td>id/稽核編號</td>
+        <td>驗證單位</td>
+        <td>驗證機構編號</td>
+        <td>專案日期<p>實際稽核日期</td>
+        <td>稽核型態</td>
+        <td>服務項目</td>
+        <td>公司名稱</td>
+        <td>稽核狀態</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% @audits.order(real_audit_date: :desc).each do |audit| %>
+        <tr>
+          <td>#</td> 
+          <td><%= audit.id %><p><%= audit.project.customer.customer_num%><%#=  %></td>
+          <td><%= audit.certification_body %></td>
+          <td><%= audit.CB_number %></td>
+
+          <td><%#=audit.project.contract_start_date%><%if audit.real_audit_date%><p><%= audit.real_audit_date.strftime("%Y/%m/%d")%><%end%></td>
+          <td><%= audit.audit_type %></td>
+          <td><%= audit.service.try(:name) %></td>
+          <td><%= link_to(truncate(audit.project.customer.customer_chi, length: 15 ), customer_path(audit.project.customer)) %></td>
+          <td>
+        <%if audit.real_audit_date%>    
+          <%if audit.real_audit_date < Time.zone.now.to_s(:db) %>
+             <%if audit.report_get_date%>
+                <%=audit.report_get_date%><%="取得"%>
+              <%else%>
+                <%="尚未取得"%><P>
+                <%= link_to("取得報告", getreport_audit_path(audit), method: :post, class: "btn btn-info") %>
+
+            <%#= link_to("續評合約", continue_customer_path(certificate.audit.project.customer), method: :post, class: "btn btn-info") %>
+              <%end%>
+            
+        <p>
+              <%if audit.report_send_date%>
+                <%=audit.report_send_date%><%="寄出"%>
+              <%else%>
+                <%="尚未寄送"%><P>
+                <%= link_to("寄送報告", sendreport_audit_path(audit), method: :post, class: "btn btn-info") %>
+
+              <%#= link_to("續評合約", continue_customer_path(certificate.audit.project.customer), method: :post, class: "btn btn-info") %>
+              <%end%>
+          <%else%>
+            等待稽核中...
+          <%end%>
+         
+         <%end%> 
+        </td>
+          <td>
+            
+              <%= link_to("Edit", edit_customer_project_audit_path(audit.project.customer,audit.project,audit), class: "btn btn-sm btn-default")%>
+              <%= link_to("Delete", customer_project_audit_path(audit.project.customer,audit.project,audit),    class: "btn btn-sm btn-default", 
+                          method: :delete, data: { confirm: "Are you sure?" } )%>
+              
+
+             <%= link_to("+", new_customer_customers_tag_path(audit.project.customer), class: "btn")%>
+<%#=audit.tags%>
+              <% audit.project.customer.tags.each do |t|%>
+              <%# audit.project.customer.tags.each do |t|%>
+              <%= t.tag_name %>
+              <% end %>
+  <%#link_to("新增合約內容項目", new_customer_project_items_project_path(@customer,project),
+                        class: "btn btn-default btn-xs") %>
+
+
+             
+          
+          </td>
+        </tr>
+      <% end %>
+
+       <%# @posts.each do |post| %>
+      <%# end %>
+
+    </tbody>
+  </table>
+  <%= will_paginate @audits %>
+
+<%if false%>
+   <h2>Import Audits</h2>
+<p>第一行輸入公司中文名稱 (如果專案數量為0  或是最新專案的年份不是當年 就創新專案)稽核放到最新專案)
+  <%=link_to("上傳格式範例","system/forms/files/000/000/032/original/稽核批次上傳格式.csv")%>
+  <%= form_tag import_audits_path, multipart: true do %>
+  <%= file_field_tag :file, :accept => "text/csv" %>
+  <%= submit_tag "Import" %>
+<% end %>
+<%end%>
+</div>

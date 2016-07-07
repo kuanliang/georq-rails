@@ -1,0 +1,282 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ *= require bootstrap-datepicker
+ *= require jquery-ui/datepicker
+ *= require jquery-ui-timepicker-addon.css
+ *= require_tree .
+ *= require_self
+ */
+
+
+
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+
+
+
+
+img {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: -1;
+}
+#li2 {top:calc(50% - 15px) ;}
+#calendar table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#calendar td,
+#calendar th {
+  font-family: "Lucida Grande",arial,helvetica,sans-serif;
+  font-size: 10px;
+  padding: 6px;
+  border: 1px solid #999;
+}
+
+#calendar th {
+  background: #DDD;
+  color: #666;
+  text-align: center;
+  width: 14.2857142857143%;
+}
+
+#calendar td {
+  background: #FFF;
+  color: #777;
+  height: 80px;
+  vertical-align: top;
+  font-size: 16px;
+}
+
+#calendar td:hover{
+background-color:#bbbbbb;
+}
+
+
+#calendar .notmonth {
+  color: #CCC;
+
+  background-color: gray;
+}
+
+#calendar #month {
+  margin: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+#calendar #month a, #calendar #month a:hover {
+  text-decoration: none;
+  padding: 0 10px;
+  color: #999;
+}
+
+#calendar .today {
+  background-color: #D7F2FF;
+}
+
+#calendar ul {
+  margin: 0;
+  margin-top: 5px;
+  padding: 0;
+  list-style: none;
+}
+
+#calendar li {
+  margin: 0;
+  padding: 0;
+  font-size: 11px;
+  text-align: center;
+}
+
+
+
+#statistics table {
+  border-collapse: collapse;
+  width: 50%;
+  
+}
+
+
+#statistics td,
+#statistics th {
+  font-family: "Lucida Grande",arial,helvetica,sans-serif;
+  font-size: 10px;
+  padding: 6px;
+  border: 1px solid #999;
+}
+
+#statistics th {
+
+  background: #ddd;
+  color: #666;
+  text-align: center;
+  width: 14.2857142857143%;
+}
+
+#statistics td {
+
+  background: #FFF;
+  color: #777;
+  height: 80px;
+  vertical-align: center;
+  font-size: 16px;
+}
+
+#information3 td,
+#information3 th {
+  
+  font-size: 15px;
+  padding: 0px;
+  border: 3px solid #FFF;
+}
+
+
+#information td,
+#information th {
+  
+  font-size: 20px;
+  padding: 1px;
+  border: 3px solid #FFF;
+}
+
+#information th {
+
+  background: #ddd;
+  color: #666;
+  text-align: center;
+  width: 14.2857142857143%;
+}
+
+#information td {
+
+  background: #FAFAFA;
+  color: #777;
+  height: 25px;
+  vertical-align: center;
+  font-size: 20px;
+}
+
+
+
+.label {
+  float: left;
+  width: 300px;
+  text-align: right;
+  margin: 2px 10px;
+}
+
+.simple_form label {
+  float: left;
+  width: 90px;
+  text-align: left;
+  margin: 2px 10px;
+}
+
+
+.simple_form div.input {
+  margin-bottom: 10px;
+}
+
+.simple_form div.boolean, .simple_form input[type='submit'] {
+  margin-left: 120px;
+}
+
+.simple_form div.boolean label, .simple_form label.collection_radio {
+  float: none;
+  margin: 0;width: 0px;
+}
+
+.simple_form label.collection_radio {
+  margin-right: 10px;
+  margin-left: 2px;
+}
+
+.simple_form .error {
+  clear: left;
+  margin-left: 120px;
+  font-size: 12px;
+  color: #D00;
+  display: block;
+}
+
+.simple_form .hint {
+  clear: left;
+  margin-left: 120px;
+  font-size: 12px;
+  color: #555;
+  display: block;
+  font-style: italic;
+}
+
+ul, li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.abgne_tab {
+  clear: left;
+  width: 100%;
+  margin: 10px 0;
+}
+ul.tabs {
+  width: 100%;
+  height: 32px;
+  border-bottom: 1px solid #999;
+  border-left: 1px solid #999;
+}
+ul.tabs li {
+  float: left;
+  height: 31px;
+  line-height: 31px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: -1px;  /* 讓 li 往下移來遮住 ul 的部份 border-bottom */
+  border: 1px solid #999;
+  border-left: none;
+  background: #e1e1e1;
+}
+ul.tabs li a {
+  display: block;
+  padding: 0 20px;
+  color: #000;
+  border: 1px solid #fff;
+  text-decoration: none;
+}
+ul.tabs li a:hover {
+  background: #ccc;
+}
+ul.tabs li.active  {
+  background: #fff;
+  border-bottom: 1px solid#fff;
+}
+ul.tabs li.active a:hover {
+  background: #fff;
+}
+div.tab_container {
+  clear: left;
+  width: 100%;
+  border: 1px solid #999;
+  border-top: none;
+  background: #fff;
+}
+div.tab_container .tab_content {
+  padding: 20px;
+}
+div.tab_container .tab_content h2 {
+  margin: 0 0 20px;
+}

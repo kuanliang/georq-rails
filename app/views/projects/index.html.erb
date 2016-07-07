@@ -1,0 +1,52 @@
+<div class="col-md-12">
+  <div class="service">
+    <h1>專案</h1>
+
+  <li><%= link_to("csv", projects_path(format: "csv"))%>
+  <li><%= link_to("excel", projects_path(format: "xls"))%>
+  </div>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <td>#</td>
+        <td>顧客id</td>
+        <td>總金額</td>
+        <td>幣別</td>
+        <td>專案類型</td>
+        <td>乙方</td>
+        <td>合約起始日</td>
+      </tr>
+    </thead>
+    <tbody>
+   
+      <% @projects.each do |p| %>
+        <tr>
+          <td><%= p.id%></td>
+          <td><%= p.customer.customer_chi %></td>
+          <td><%= p.total_amount %></td>
+          <td><%= p.currency %></td>
+          <td><%= p.project_type %></td>
+          <td><%= p.partyb %></td>
+          <td><%= p.contract_start_date %></td>
+   			<td>         
+              <%= link_to("Edit", edit_customer_project_path(p.customer,p), class: "btn btn-sm btn-default")%>
+              <%= link_to("Delete", customer_project_path(p.customer,p),    class: "btn btn-sm btn-default", 
+                          method: :delete, data: { confirm: "Are you sure?" } )%>
+                    </td>
+        </tr>
+      <% end %>
+
+       <%# @posts.each do |post| %>
+      <%# end %>
+
+    </tbody>
+  </table>
+  <h2>Import Products</h2>
+<p>第一行輸入公司中文名稱 
+	<%=link_to("上傳格式範例","system/forms/files/000/000/032/original/專案批次上傳格式.csv")%>
+  <%= form_tag import_projects_path, multipart: true do %>
+  <%= file_field_tag :file, :accept => "text/csv" %>
+  <%= submit_tag "Import" %>
+<% end %>
+
+</div>

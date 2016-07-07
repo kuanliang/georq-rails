@@ -1,0 +1,136 @@
+<div class="col-md-12">
+  <div class="customer">
+<%# @ta.customers.each do |c|%>
+  <%#= c.customer_name%>
+<%#` end %>
+
+    <%#= link_to("New audit", new_customer_path, class: "btn btn-primary pull-right") %>
+  </div>
+
+   
+<%= search_form_for @q do |f| %>
+<%=f.label "驗證單位" %>
+  <%=f.select :audit_certification_body_cont ,["Royalcert","友意","凱瑞克","恩雅","DAS","環球","亞瑟"] ,:include_blank => true%>
+  <%=f.label "稽核類型" %>
+  <%=f.select :audit_audit_type_cont ,["正評","SV1", "SV2","RA"] ,:include_blank => true%>
+
+  <%=f.label "服務項目" %>
+  <%=f.select :audit_service_id_eq ,options_from_collection_for_select(Service.all, :id, :name, params[:service_id_eq]),:include_blank => true %>
+ <%=f.label "證書號碼" %>
+  <%=f.search_field :certificate_num_cont %>
+  <%=f.label "客戶名稱" %>
+  <%=f.search_field :audit_project_customer_customer_chi_cont %>
+   <%=f.label "標籤" %>
+  <%#=f.search_field :audit_project_customer_tags_id_eq %>
+
+   <%=f.select :audit_project_customer_tags_id_eq ,options_from_collection_for_select(Tag.all, :id, :tag_name, params[:audit_project_customer_tags_id_eq]),:include_blank => true %>
+ <%#=f.label "客戶名稱" %>
+  <%#=f.search_field :audit_certificate_get_date_eq %>
+
+     <p>證書取得日
+    <%= f.label "從" %>
+  <%= f.search_field :audit_certificate_get_date_gteq, placeholder: "YYYY-MM-DD" %>
+  <%#= f.search_field :project_contract_start_date_start, placeholder: "YYYY-MM-DD" %>
+   <%= f.label "到" %>
+  <%= f.search_field :audit_certificate_get_date_lt %>
+   <p>寄送日
+    <%= f.label "從" %>
+  <%= f.search_field :audit_certificate_send_date_gteq, placeholder: "YYYY-MM-DD" %>
+  <%#= f.search_field :project_contract_start_date_start, placeholder: "YYYY-MM-DD" %>
+   <%= f.label "到" %>
+  <%= f.search_field :audit_certificate_send_date_lt %>
+  <%=f.submit %>
+
+
+
+  
+<% end %>
+
+<%="共"+@q.result.count.to_s+"項結果"%>
+<%= will_paginate @certificates %>
+<%#= paginate @certificates %>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <td>客戶名稱</td>
+        <td>驗證單位<p>證書編號</td>
+        <td>證書型態</td>
+        <td>初始日期</td>
+        <td><%= sort_link(@q, :issue_date,"發布日期")  %></td>
+        <td>有效日期</td>
+        <td>狀態</td>
+        <td></td>
+        <td><%#= sort_link(@q, Auditor.certificate_get_date,"取得日期")  %><p><%#= sort_link(@q, :certificate_send_date,"寄送日期")  %></td>
+      </tr>
+    </thead>
+    <tbody>
+      <%customers=[]%>
+      <% @certificates.each do |certificate| %>
+        <tr>
+         
+          <% if customers.include?(certificate.audit.project.customer.id)%>
+          <%else%>
+          <%customers=customers+[certificate.audit.project.customer.id]%>
+          <%end%>
+          <td><%= link_to(truncate(certificate.audit.project.customer.customer_chi, length: 15 ),edit_customer_path(certificate.audit.project.customer))%><p><%=certificate.audit.project.customer.customer_num%><%#=  %></td>
+          <td><%= link_to(certificate.audit.certification_body.to_s,edit_customer_project_audit_path(certificate.audit.project.customer,certificate.audit.project,certificate.audit)) %><%if certificate.audit.service%><%="-"+certificate.audit.service.alias.to_s%><%end%><%#=  %><P><%if certificate.certificate_num %><%= link_to(certificate.certificate_num,edit_customer_project_audit_certificate_path(certificate.audit.project.customer,certificate.audit.project,certificate.audit,certificate)) %><%else%><%= link_to("點擊編輯證書",edit_customer_project_audit_certificate_path(certificate.audit.project.customer,certificate.audit.project,certificate.audit,certificate)) %><%end  %></td>
+          <td><%= certificate.certificate_type %><%#=  %></td>
+          <td><%= certificate.initial_date %><%#=  %></td>
+          <td><%= certificate.issue_date %><%#=  %></td>
+          <td><%= certificate.expiration_date %><%#=  %></td>
+          <td><%= certificate.status %><%#=  %></td>
+          <td>
+          <%#to("Edit", edit_customer_project_audit_certificate_path(certificate.audit.project.customer,certificate.audit.project,certificate.audit,certificate), class: "btn btn-sm btn-default")%>
+              <%= link_to("X", customer_project_audit_certificate_path(certificate.audit.project.customer,certificate.audit.project,certificate.audit,certificate),    class: "btn btn-sm btn-default", 
+                          method: :delete, data: { confirm: "Are you sure?" } )%>
+
+          </td>
+          <td>
+          <%if certificate.audit.certificate_get_date%>
+            <%=certificate.audit.certificate_get_date%><%="取得"%>
+          <%else%>
+            <%="尚未取得"%><P>
+            <%= link_to("取得證書", getcertificate_certificate_path(certificate), method: :post, class: "btn btn-info") %>
+
+          <%#= link_to("續評合約", continue_customer_path(certificate.audit.project.customer), method: :post, class: "btn btn-info") %>
+          <%end%>
+
+        <p>
+          <%if certificate.audit.certificate_send_date%>
+            <%=certificate.audit.certificate_send_date%><%="寄出"%>
+          <%else%>
+            <%="尚未寄送"%><P>
+            <%= link_to("寄送證書", sendcertificate_certificate_path(certificate), method: :post, class: "btn btn-info") %>
+
+          <%#= link_to("續評合約", continue_customer_path(certificate.audit.project.customer), method: :post, class: "btn btn-info") %>
+          <%end%>
+
+        </td>
+          
+                
+           <%if certificate.audit.certification_body == 'Royalcert'%>    
+               <td>
+
+                <%= link_to("中文", customer_project_audit_certificate_path(certificate.audit.project.customer,certificate.audit.project,certificate.audit,certificate,format: :pdf,:ver => 'chi',:preview => 0)) %>
+                <%= link_to("預覽", customer_project_audit_certificate_path(certificate.audit.project.customer,certificate.audit.project,certificate.audit,certificate,format: :pdf,:ver => 'chi',:preview => 1)) %>
+                  <%= link_to("英文", customer_project_audit_certificate_path(certificate.audit.project.customer,certificate.audit.project,certificate.audit,certificate,format: :pdf,:ver => 'en',:preview => 0)) %>
+                  <%= link_to("預覽", customer_project_audit_certificate_path(certificate.audit.project.customer,certificate.audit.project,certificate.audit,certificate,format: :pdf,:ver => 'en',:preview => 1)) %>
+                <%#= link_to("image_tag("PDF_icon_chi.gif")", customer_project_audit_certificate_path(certificate.audit.project.customer,certificate.audit.project,certificate.audit,certificate,format: :pdf,:ver => 'chi',:preview => 0)) %>
+                <%#= link_to(image_tag("preview_icon.jpg"), customer_project_audit_certificate_path(certificate.audit.project.customer,certificate.audit.project,certificate.audit,certificate,format: :pdf,:ver => 'chi',:preview => 1)) %>
+                  <%#= link_to(image_tag("PDF_icon_en.gif"), customer_project_audit_certificate_path(certificate.audit.project.customer,certificate.audit.project,certificate.audit,certificate,format: :pdf,:ver => 'en',:preview => 0)) %>
+                  <%#= link_to(image_tag("preview_icon.jpg"), customer_project_audit_certificate_path(certificate.audit.project.customer,certificate.audit.project,certificate.audit,certificate,format: :pdf,:ver => 'en',:preview => 1)) %>
+                </td>
+               <%else%>
+               <td>-</td>
+             <%end%>
+        </tr>
+      <% end %>
+
+       <%# @posts.each do |post| %>
+      <%# end %>
+
+    </tbody>
+  </table>
+  <%="共"+customers.size.to_s+"客戶"%>
+  <%= paginate @certificates %>
+</div>

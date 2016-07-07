@@ -1,0 +1,19 @@
+<%=form_tag({:action=>"search"}, {:method=>"get"}) %>
+<%=text_field_tag :q %>
+<%=submit_tag "Search" %>
+</form>
+
+<% if @books %>
+<%=will_paginate @books %> ＃没有效果
+<p>Your search "<%=params[:q] %>" produced
+<%=pluralize @books.size, "result" %>:</p>
+
+        <dl id="books">
+<% for book in @books %>
+<dt><%=link_to book.title, :action=>"show", :id=>book %></dt>
+<% for author in book.authors %>
+<dd><%=author.last_name %>, <%=author.first_name %></dd>
+<% end %>
+<dd><%=pluralize(book.page_count, "page") %></dd>
+<dd>Price: $<%=book.price %></dd>
+关键词：

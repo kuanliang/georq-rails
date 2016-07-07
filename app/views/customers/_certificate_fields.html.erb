@@ -1,0 +1,16 @@
+ 
+ 	  <div class="form-inline">
+
+	      <%f.input :status,label:'狀態', collection:["認可","期限到期失效","註銷","撤銷"], input_html: { class: "form-control"} ,:include_blank => false %>
+	  </div>
+	  <div class="form-inline">
+	      <%= f.input :initial_date,label:'初始日期' ,as: :string, input_html: { class: 'datepicker' } %>
+	      <%= f.input :issue_date, label:'發佈日期' ,as: :string, input_html: { class: 'datepicker' } %>
+	      <%= f.input :expiration_date,label:'有效日期' ,as: :string, input_html: { class: 'datepicker' } %>
+  	  </div>
+      <%= f.input :comment,  input_html: { class: "form-control"} %>
+
+<%# unless f.object.new_record? %>
+    <%#= f.label :_destroy, 'Remove:' %>
+    <%#= f.check_box :_destroy %>
+<%# end %>

@@ -1,0 +1,173 @@
+<%= simple_form_for customer do |f| %>
+
+<div class="abgne_tab">
+
+  <ul class="tabs">
+    <li><a href="#tab1">客戶資訊</a></li>
+    <li><a href="#audit">稽核資訊</a></li>
+    <li><a href="#tab">標籤</a></li>
+  </ul>
+    
+  <div class="tab_container">
+
+    <div id="tab1" class="tab_content">
+
+        <div class="form-inline" style="background-color:#FFD382;padding:10px;margin-bottom:1px;">
+        基本資訊
+        </div>
+
+            <HR color="#00FF00" size="10" width="50%">
+        
+        <div class="form-inline">
+          <%= f.input :customer_num, input_html: { class: "form-control"} ,label:"公司編號"%>
+          <%= f.input :identification_num, input_html: { class: "form-control"} ,label: "統一編號" %>
+          <%= f.input :owner            , input_html: { class: "form-control"} ,label: "負責人" %> 
+        </div>
+        <div class="form-inline">
+
+          <%= f.input :customer_chi, input_html: { class: "form-control"} ,label: "中文名稱"%>
+          <%= f.input :customer_eng, input_html: { class: "form-control"} ,label: "英文名稱" %>
+          <%= f.input :staff_num              , input_html: { class: "form-control", :size => '5%'  },label: "員工人數"  %>
+          <%= f.input :site_num              , input_html: { class: "form-control", :size => '5%' },label: "地點數"  %>
+        </div>
+      
+        <div class="form-inline">
+        
+          <%= f.input :mr_chi              , input_html: { class: "form-control"} ,label:"管代"%>
+          <%= f.input :mr_eng              , input_html: { class: "form-control"},label:"管代英文" %>
+          <%= f.input :mr_pos              , input_html: { class: "form-control"},label:"管代職稱" %>
+        </div>
+
+            <HR color="#00FF00" size="10" width="50%">
+
+        <div class="form-inline" style="background-color:#FFD382;padding:10px;margin-bottom:1px;">
+          聯絡資訊
+        </div>
+
+            <HR color="#00FF00" size="10" width="50%">
+
+        <div class="form-inline">
+          <%= f.input :contact_ppl              , input_html: { class: "form-control"},label:"聯絡人" %>
+          <%= f.input :contact_tel              , input_html: { class: "form-control"},label:"聯絡電話" %>
+          <%= f.input :fax_num             , input_html: { class: "form-control"},label:"傳真號碼" %>
+          <%= f.input :contact_email             , input_html: { class: "form-control"},label:"信箱"%>
+          <HR color="#00FF00" size="10" width="50%">
+           <%= f.input :contact_addr             , input_html: { class: "form-control", :size => '100%'} ,label:"聯絡地址"%>
+        </div>
+         <HR color="#00FF00" size="10" width="50%">
+        <div class="form-inline" style="background-color:#FFD382;padding:10px;margin-bottom:1px;">
+        其他資訊
+        </div>
+          <HR color="#00FF00" size="10" width="50%">
+        <div class="form-inline">
+          <%= f.input :office_addr_chi             , input_html: { class: "form-control", :size => '50%' },label:"辦公室(中)" %>
+          <%= f.input :office_addr_eng             , input_html: { class: "form-control", :size => '50%' } ,label:"辦公室(英)"%>
+        </div>
+        <HR color="#00FF00" size="10" width="50%">
+        <div class="form-inline">
+          <%= f.input :factory_addr_cht             , input_html: { class: "form-control", :size => '50%'}, label:"工廠(中)"  %>
+          <%= f.input :factory_addr_eng             , input_html: { class: "form-control", :size => '50%'  },label:"工廠(英)" %>
+        </div>
+
+
+         <div class="form-inline">
+
+
+          <%= f.input :certification_body             , input_html: { class: "form-control", :size => '50%'}, label:"CB"  %>
+          
+          <%= f.input :CB_number             , input_html: { class: "form-control", :size => '50%'  },label:"CB_number" %>
+          <%= f.input :orginal_audit_date             , input_html: { class: "form-control", :size => '50%'}, label:"初始驗證日期"  %>
+          <%= f.input :audit_standard             , input_html: { class: "form-control", :size => '50%'  },label:"標準" %>
+        </div>
+
+
+       <div class="form-inline">
+          <%= f.input :scope_chi  ,  as: :text         , input_html: { class: "form-control", :size => '50%'}, label:"範圍(中)", row: 4  %>
+          <%= f.input :scope_eng  ,  as: :text                 , input_html: { class: "form-control", :size => '50%'  },label:"範圍(英)" , row: 4%>
+        </div>
+              <HR color="#00FF00" size="10" width="50%">
+
+        <%= f.input :level  , :collection => ['a','b','c']           , input_html: { class: "form-control"} %>
+
+        <div >
+          <%= f.input :stop,as: :boolean, input_html: { class: "form-control"},label: "停驗"%>
+        </div>
+           <div class="form-inline">
+          <%= f.input :stop_date,as: :string, input_html: { class: 'datepicker' },label: "停驗日期" %>
+          <%= f.input :stop_reason            , input_html: { class: "form-control"} ,label: "停驗原因" %> 
+        </div>
+         <%= f.input :comment             , input_html: { class: "form-control"}, row: 4 %>
+         
+    </div>
+
+
+    <div id="audit" class="tab_content">
+ 
+        <table>
+           <table>
+          <tr>
+        <td>
+            <div class="field">
+              <%= f.label "稽核月份" %><br />
+              <%= f.collection_check_boxes :audit_month_ids, AuditMonth.all, :id, :name do |b| %>
+                  <div class="collection-check-box">
+                  <%= b.label { b.check_box + b.text } %>
+                </div>
+              <% end %>
+</div>   </td>
+      </tr>
+      </table>
+          <%= f.simple_fields_for (:projects) do |builder| %>
+              <%= render "project_fields", :f => builder %>
+          <% end %>
+        </table>
+
+    </div> <%#tab_content_audit%>
+    <div id="tab" class="tab_content">
+ 
+        <p>
+         <%= f.collection_check_boxes(:tag_ids, Tag.all, :id, :tag_name) do |b| %>
+            <%= b.label { b.check_box + b.text } %>
+            <%end%>
+       
+    <P>
+    </div> <%#tab_content_audit%>
+
+    
+
+  </div> <%#tab_container%>
+</div>
+  
+
+  <%= f.submit "Submit", class: "btn btn-primary", data: { disable_with: "Submitting..." } %>
+<% end %>
+
+<script type="text/javascript">
+function SetCwinHeight(){ var iframeid=document.getElementById("mainframe"); //iframe id 
+if (document.getElementById){ if (iframeid && !window.opera) { if (iframeid.contentDocument && iframeid.contentDocument.body.offsetHeight) { iframeid.height = iframeid.contentDocument.body.offsetHeight; } else if(iframeid.Document && iframeid.Document.body.scrollHeight) { iframeid.height = iframeid.Document.body.scrollHeight; } } } };
+
+
+  $(function(){
+    // 預設顯示第一個 Tab
+    var _showTab = 0;
+    var $defaultLi = $('ul.tabs li').eq(_showTab).addClass('active');
+    $($defaultLi.find('a').attr('href')).siblings().hide();
+    
+    // 當 li 頁籤被點擊時...
+    // 若要改成滑鼠移到 li 頁籤就切換時, 把 click 改成 mouseover
+    $('ul.tabs li').click(function() {
+      // 找出 li 中的超連結 href(#id)
+      var $this = $(this),
+        _clickTab = $this.find('a').attr('href');
+      // 把目前點擊到的 li 頁籤加上 .active
+      // 並把兄弟元素中有 .active 的都移除 class
+      $this.addClass('active').siblings('.active').removeClass('active');
+      // 淡入相對應的內容並隱藏兄弟元素
+      $(_clickTab).stop(false, true).fadeIn().siblings().hide();
+
+      return false;
+    }).find('a').focus(function(){
+      this.blur();
+    });
+  });
+</script>

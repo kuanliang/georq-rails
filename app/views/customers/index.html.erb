@@ -1,0 +1,145 @@
+<div class="col-md-12">
+  <%if false%>
+  <table>
+  <tr> 
+  <td>           
+  <%=link_to("停驗", {:tag => "stop"}, class: "btn btn-sm btn-default ") %> 
+  <% if params[:download] == '1' %>
+    <li><%= link_to("csv", customers_path(format: "csv",:tag => "stop"))%>
+    <li><%= link_to("excel", customers_path(format: "xls",:tag => "stop"))%> 
+  <%end%>
+</td>
+  <td>
+  <%=link_to('所有有標籤的', {:tag => "all"}, class: "btn btn-sm btn-default ") %>
+   <% if params[:download] == '1' %>
+
+  <li><%= link_to("csv", customers_path(format: "csv"))%>
+  <li><%= link_to("excel", customers_path(format: "xls"))%>
+    <%end%>
+  </td>
+     <% @tags.each do |t|%>
+    <td>   
+          <%=link_to(t.tag_name, {:tag => t.tag_name}, class: "btn btn-sm btn-default ") %>
+          <% if params[:download] == '1' %>
+          <li><%= link_to("csv", customers_path(format: "csv",:tag => t.tag_name))%>
+          <li><%= link_to("excel", customers_path(format: "xls",:tag => t.tag_name))%>
+            <%end%>
+      </td>      
+      <% end %>
+      <td>
+      <%= link_to "Download", :download => 1 %>
+      </td>
+  </tr>
+
+    </table>
+    <%end%>
+  <div class="customer">
+    <%= link_to("New customer", new_customer_path, class: "btn btn-primary pull-right") %>
+<%# @ta.customers.each do |c|%>
+  <%#= c.customer_name%>
+<%#` end %>
+
+  
+  </div>
+
+
+<%= search_form_for @q do |f| %>
+  <%#=f.label :CB_number %>
+  <%#=f.text_field :CB_number %>
+
+  <%=f.label "驗證單位" %>
+  <%=f.select :projects_audits_certification_body_cont ,["Royalcert","友意","凱瑞克","恩雅","DAS","環球","亞瑟"] ,:include_blank => true%>
+  <%#= f.label "客戶名稱" %>
+  <%#= f.search_field :customer_chi_cont %>
+  <%#=f.label "稽核類型" %>
+  <%#=f.select :audit_type_cont ,["正評","SV1", "SV2","RA"] ,:include_blank => true%>
+
+  <%#=f.label "服務項目" %>
+  <%#=f.select :service_id_eq ,options_from_collection_for_select(Service.all, :id, :name, params[:service_id_eq]),:include_blank => true %>
+  <%=f.label "標籤" %>
+  <%=f.select :tags_id_eq ,options_from_collection_for_select(Tag.all, :id, :tag_name, params[:tags_id_eq]),:include_blank => true %>
+  <%=f.label "排定稽核月份" %>
+  <%=f.select :audit_months_id_eq ,options_from_collection_for_select(AuditMonth.all, :id, :name, params[:audit_month_id_eq]),:include_blank => true %>
+   <%=f.label "是否停驗" %>
+  <%=f.select :stop_eq ,[0,1],:include_blank => "All" %>
+  <%#=f.label "是否停驗" %>
+  <%#=#f.select :stop_not_eq ,[0,1],:include_blank => "All" %>
+   <%#= f.label "從" %>
+  <%#= f.search_field :project_contract_start_date_gteq, placeholder: "YYYY-MM-DD" %>
+
+   <%#= f.label "到" %>
+  <%#= f.search_field :project_contract_start_date %>
+  <%#=f.text_field :audit_standard %>
+
+  <%#=f.label :auditor %>
+  <%#=f.text_field :auditor %>
+  <%=f.submit %>
+<% end %>
+ <%= link_to("更新全部", updateall_customers_path(), method: :post, class: "btn btn-info") %>
+共<%=@q.result.distinct.count%>筆
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <td>#</td>
+        <%#<td>id</td>%>
+        <td><%= sort_link(@q, :customer_num,"編號")  %></td>
+          
+        <td>
+          <%= sort_link(@q, :customer_chi,"名稱") %>
+        </td>
+        <td>最新年份</td>
+        <td>統一編號</td>
+        <td><%= sort_link(@q, :stop,"停驗")  %></td>
+      </tr>
+    </thead>
+    <tbody>
+      <% @customers.each do |customer| %>
+        <tr>
+          <td>#</td> 
+          <td><%= customer.customer_num %></td>
+          <td><h4><%= link_to(truncate(customer.customer_chi, length: 15 ), customer_path(customer)) %></h4><P> <%= simple_format(truncate(customer.customer_eng), :lenth => 20)%></td>
+          <td><%if customer.projects.order(:contract_start_date).last%><% if customer.projects.order(:contract_start_date).last.contract_start_date %><%= link_to(customer.projects.order(:contract_start_date).last.contract_start_date.year,customer_project_path(customer,customer.projects.order(:contract_start_date).last)) %><%end%><%end%><P>
+            <%if customer.audits.order(:real_audit_date).last%><% if customer.audits.order(:real_audit_date).last.real_audit_date %><%= link_to(customer.audits.order(:real_audit_date).last.real_audit_date.strftime("%Y-%m-%d"),edit_customer_project_audit_path(customer,customer.projects.order(:contract_start_date).last,customer.projects.order(:contract_start_date).last.audits.last)) %><%end%><%end%>
+          </td>
+          <td><%= customer.identification_num %></td>
+          <td><%if customer.stop==true%> <%=customer.stop_date.to_s+"\n停驗"%><%end%></td>
+          <td>
+            <%# if group.editable_by?(current_user) %>
+
+              <%= link_to("Edit", edit_customer_path(customer), class: "btn btn-sm btn-default")%>
+              <%= link_to("Delete", customer_path(customer),    class: "btn btn-sm btn-default", 
+                          method: :delete, data: { confirm: "Are you sure?" } )%>
+              <%= link_to("+", new_customer_customers_tag_path(customer), class: "btn")%>
+              <%#= link_to("+", new_customer_audit_month_path(customer), class: "btn")%>
+              <%# customer.tags.each do |ct|%>
+              <%#= ct.tag_name %>
+              <%# end %>
+  <%#link_to("新增合約內容項目", new_customer_project_items_project_path(@customer,project),
+                        class: "btn btn-default btn-xs") %>
+
+
+             
+            <%# end %>
+          </td>
+        </tr>
+      <% end %>
+       <%# @posts.each do |post| %>
+      <%# end %>
+
+    </tbody>
+  </table>
+
+<%= paginate @customers %>
+
+
+<%if false%>
+        <h2>Import customers</h2>
+        <p>檔案內容有id則update其資料,找不到id則新增一筆資料
+          <%= form_tag import_customers_path, multipart: true do %>
+          <%= file_field_tag :file, :accept => "text/csv" %>
+          <%= submit_tag "Import" %>
+      <% end %>
+<%end%>
+
+</div>

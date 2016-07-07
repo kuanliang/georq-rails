@@ -1,0 +1,25 @@
+
+ 
+   <%= simple_form_for [certificate],:url => customer_project_audit_certificate_path(@customer,@project,@audit) do |f| %> 
+       <h1><%=certificate.audit.project.customer.customer_chi%> </h1> 
+       <%=certificate.audit.certification_body%>
+       <%=certificate.audit.service.try(:name)%> 
+       <p>
+	  <div class="form-inline">
+	      <%= f.input :certificate_num,label:'證書編號',  input_html: { class: "form-control"},:include_blank => false %>
+	      <%= f.input :certificate_type,label:'證書類型', collection:["認證","非認證"], input_html: { class: "form-control"} %>
+	      <%= f.input :status,label:'狀態', collection:["認可","期限到期失效","註銷","撤銷"], input_html: { class: "form-control"} ,:include_blank => false %>
+	  </div>
+	  <div class="form-inline">
+	      <%#= f.input :initial_date,label:'初始日期' ,as: :string, input_html: { class: 'datepicker2'  ,format: "mm/dd/yyyy" } %>
+	      <%= f.input :initial_date, label:'初始日期' ,as: :string%>
+	      <%= f.input :issue_date, label:'發佈日期' ,as: :string%>
+	      <%= f.input :expiration_date,label:'有效日期' ,as: :string%>
+  	  </div>
+      <%= f.input :comment,  input_html: { class: "form-control"} %>
+      <%= f.submit "Submit", class: "btn btn-primary", data: { disable_with: "Submitting..." } %>
+
+
+    
+    <% end %>
+

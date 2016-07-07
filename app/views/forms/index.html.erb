@@ -1,0 +1,40 @@
+<div class="col-md-12">
+  <div class="service">
+    <h1>表單</h1>
+    <%= link_to("New form", new_form_path, class: "btn btn-primary pull-right") %>
+  </div>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <td>#</td>
+        <td>名稱</td>
+        <td>內容描述</td>
+        <td>版本</td>
+        <td>追蹤</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% @forms.each do |form| %>
+        <tr>
+          <td>#</td>
+          <td><%= form.name %></td>
+          <td><%= form.describe %></td>
+          <td><%= form.version %></td>
+          <td><%= form.follow%></td>
+          <td><%= form.company%></td>
+          <td><%="附件:"%><%= link_to(form.file_file_name,form.file.url, target: '_blank') %></td>
+          <td><%#= service.desctiption %></td>
+          <td>        
+              <%= link_to("Edit", edit_form_path(form), class: "btn btn-sm btn-default")%>
+              <%= link_to("Delete", form_path(form),    class: "btn btn-sm btn-default", 
+                          method: :delete, data: { confirm: "Are you sure?" } )%>
+                    </td>
+        </tr>
+      <% end %>
+
+       <%# @posts.each do |post| %>
+      <%# end %>
+
+    </tbody>
+  </table>
+</div>
